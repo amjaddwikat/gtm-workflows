@@ -26,7 +26,7 @@ campaigns, partner management, and internal process automation — built in
 
 - **n8n** — self-hosted workflow automation (form triggers, webhooks, HTTP requests, conditional branching, loops)
 - **Make (Integromat)** — CRM-integration-heavy workflows, especially HubSpot
-- **Integrations used across these workflows:** Google Sheets, Slack, HubSpot, Apify, Clay, OpenAI, Smartlead
+- **Integrations used across these workflows:** Google Sheets, Slack, HubSpot, Apify, Clay, OpenAI, Smartlead, Apollo.
 
 ## Viewing these workflows
 
