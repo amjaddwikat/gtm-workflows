@@ -1,0 +1,540 @@
+{
+  "name": "Apollo leads enricher",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "ClientCo Apollo Auto Enrichment",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Apollo Search URL ",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Requested By",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Stefan Ramershoven"
+                  },
+                  {
+                    "option": "Kedar Dani"
+                  },
+                  {
+                    "option": "Danny Arthur"
+                  },
+                  {
+                    "option": "Tickers"
+                  },
+                  {
+                    "option": "Raphael Bauer"
+                  },
+                  {
+                    "option": "Hendrik (Rick) Leitner"
+                  },
+                  {
+                    "option": "Warren Holtman"
+                  },
+                  {
+                    "option": "Sebastian Kosch"
+                  },
+                  {
+                    "option": "Alex Tataran"
+                  },
+                  {
+                    "option": "Enrique Diaz"
+                  },
+                  {
+                    "option": "Aimen Bousbia Laiche"
+                  },
+                  {
+                    "option": "Ele Costello"
+                  },
+                  {
+                    "option": "Joseph Ganiwa"
+                  },
+                  {
+                    "option": "Sergei Surenian"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Request ID",
+              "placeholder": "What you want this Enrichment to be called, Ex. \"25-06-X Company COO's\"",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Request Date",
+              "fieldType": "date"
+            }
+          ]
+        },
+        "options": {
+          "respondWithOptions": {
+            "values": {
+              "formSubmittedText": "Your request has been received"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        280,
+        -35
+      ],
+      "id": "dab08bc7-00f3-4eb2-bb5d-6d8de3f1926e",
+      "name": "On form submission",
+      "webhookId": "036a39ae-28b2-42a0-8fbe-fe372e250988"
+    },
+    {
+      "parameters": {
+        "url": "https://api.apify.com/v2/actor-tasks/clientco~apollo-io-scraper-task/run-sync-get-dataset-items?token=REDACTED",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $('On form submission').first().json['Apollo Search URL '] }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          },
+          "timeout": 300000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        940,
+        -35
+      ],
+      "id": "1eb776c2-7fb1-4be8-8420-acc4b3341bc9",
+      "name": "Apify RUN ACTOR ENDPOINT",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$('Get Webhook Address').first().json['Clay Table Webhook']}}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "Apollo_ID",
+              "value": "={{ $('Loop in').item.json.id }}"
+            },
+            {
+              "name": "First_Name",
+              "value": "={{  $('Loop in').item.json.first_name }}"
+            },
+            {
+              "name": "Last_Name",
+              "value": "={{  $('Loop in').item.json.last_name }}"
+            },
+            {
+              "name": "Apollo_Email",
+              "value": "={{  $('Loop in').item.json.email }}"
+            },
+            {
+              "name": "LinkedIn_URL",
+              "value": "={{  $('Loop in').item.json.linkedin_url }}"
+            },
+            {
+              "name": "Twitter_URL",
+              "value": "={{  $('Loop in').item.json.twitter_url }}"
+            },
+            {
+              "name": "Job_Title",
+              "value": "={{ $('Loop in').item.json.title }}"
+            },
+            {
+              "name": "Company_Name",
+              "value": "={{ $('Loop in').item.json.organization_name }}"
+            },
+            {
+              "name": "Company_Website",
+              "value": "={{ $('Loop in').item.json.organization_website_url }}"
+            },
+            {
+              "name": "Contact_Location",
+              "value": "={{ $('Loop in').item.json.present_raw_address }}"
+            },
+            {
+              "name": "Request_ID",
+              "value": "={{ $('On form submission').first().json['Request ID'] }}"
+            },
+            {
+              "name": "Full_Name",
+              "value": "={{ $('Loop in').item.json.name }}"
+            },
+            {
+              "name": "Request_Date",
+              "value": "={{ $('On form submission').first().json['Request Date'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1380,
+        15
+      ],
+      "id": "83c9777d-a55d-40c7-baba-b5aa7d949a6c",
+      "name": "Send to Clay"
+    },
+    {
+      "parameters": {
+        "content": "Add a Slack Notification that the enrichment is ready"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2120,
+        -540
+      ],
+      "typeVersion": 1,
+      "id": "10bb5c82-6d83-4683-9d01-cae6faca9ec9",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1mXa62qGUqmucnepbFakkGZ2pA6yniliqZkuCkMstlUg",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2025151718,
+          "mode": "list",
+          "cachedResultName": "Apollo Auto Enrichment",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mXa62qGUqmucnepbFakkGZ2pA6yniliqZkuCkMstlUg/edit#gid=2025151718"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Real Name",
+              "lookupValue": "={{ $('On form submission').first().json['Requested By'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        500,
+        -35
+      ],
+      "id": "c5ca0ab9-9955-4892-ab10-b3bfc811656b",
+      "name": "Get Webhook Address",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08VA9GR6US",
+          "mode": "id"
+        },
+        "text": "=<@{{ $('Get Webhook Address').first().json['Member ID'] }}> Your Apollo enrichment request is now processing, I will notify you when it's ready 😉",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        720,
+        -35
+      ],
+      "id": "e39e3dd2-b5d3-4c1a-b169-c40435dcc871",
+      "name": "Notify that request is recived",
+      "webhookId": "38bd5db3-b982-4860-bd87-63bec400c21a",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Get Webhook Address').first().json['Results Google Sheet - Document ID'] }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Get Webhook Address').first().json['Results Google Sheet - Sheet ID'] }}",
+          "mode": "id"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Apollo_ID",
+              "lookupValue": "={{ $('Apify RUN ACTOR ENDPOINT').last().json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1600,
+        -260
+      ],
+      "id": "98144861-7abe-4e44-a21b-70c896997501",
+      "name": "Get last item",
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08VA9GR6US",
+          "mode": "id"
+        },
+        "text": "=<@{{ $('Get Webhook Address').first().json['Member ID'] }}> Your Apollo enrichment request ({{ $('On form submission').item.json['Request ID'] }}) is now ready.\nPlease check your Google Sheet. Good Luck 🙏",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "thread_ts": {
+            "replyValues": {
+              "thread_ts": "={{ $('Notify that request is recived').first().json.message_timestamp }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2040,
+        -185
+      ],
+      "id": "67447cae-6c2d-472d-be60-e1343e6b9ff2",
+      "name": "Enrichment end notification",
+      "webhookId": "38bd5db3-b982-4860-bd87-63bec400c21a",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1380,
+        -185
+      ],
+      "id": "2b084156-8c75-42eb-8162-6e4cc1cde645",
+      "name": "Wait 10m",
+      "webhookId": "2b95d1e2-2b5e-4bfa-98c5-c149f5baa65c"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d20c596c-8738-4bfc-91d5-8a846caccbaa",
+              "leftValue": "={{ $('Get last item').item.json.Apollo_ID }}",
+              "rightValue": "={{ $('Apify RUN ACTOR ENDPOINT').last().json.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1820,
+        -185
+      ],
+      "id": "3ee3ff65-bc26-4edf-9e9f-23a44bb1dce0",
+      "name": "IF Last entry is enriched"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1160,
+        -35
+      ],
+      "id": "8982ef57-9ca6-4bf7-b3cd-70ec1e5a506d",
+      "name": "Loop in"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Get Webhook Address",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apify RUN ACTOR ENDPOINT": {
+      "main": [
+        [
+          {
+            "node": "Loop in",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to Clay": {
+      "main": [
+        [
+          {
+            "node": "Loop in",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Webhook Address": {
+      "main": [
+        [
+          {
+            "node": "Notify that request is recived",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify that request is recived": {
+      "main": [
+        [
+          {
+            "node": "Apify RUN ACTOR ENDPOINT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get last item": {
+      "main": [
+        [
+          {
+            "node": "IF Last entry is enriched",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 10m": {
+      "main": [
+        [
+          {
+            "node": "Get last item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Last entry is enriched": {
+      "main": [
+        [
+          {
+            "node": "Enrichment end notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait 10m",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop in": {
+      "main": [
+        [
+          {
+            "node": "Wait 10m",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send to Clay",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "b00241eb-4c2b-46e0-840c-7f519b1a3ce6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ce27a89c8ae68e85f4ab42c91c428ac631b845888de8f3d4542aeae86606a1fc"
+  },
+  "id": "8IPZdT9UQWvflA9m",
+  "tags": []
+}

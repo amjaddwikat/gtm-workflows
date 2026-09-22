@@ -1,0 +1,1420 @@
+{
+  "name": "Website-Inbounds-Free-Trial-&-Whitepaper",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "get",
+        "contactId": {
+          "__rl": true,
+          "value": "={{$('Extract Record ID').first().json.message.content}}",
+          "mode": "id"
+        },
+        "additionalFields": {
+          "propertiesCollection": {
+            "propertiesValues": {
+              "properties": [
+                "firstname",
+                "lastname",
+                "work_email",
+                "jobtitle",
+                "sdr_owner"
+              ]
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.1,
+      "position": [
+        1300,
+        0
+      ],
+      "id": "b0311b37-614a-45a3-b7fd-b32c3d231bc7",
+      "name": "HubSpot",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "hubspotOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_HUBSPOTOAUTH2API_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d6b94b30-acbd-4197-9f88-7e55324be0e4",
+              "leftValue": "={{ $('Extract Contact Owner').first().json.message.content }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "b2e5beee-7e13-434f-be95-4d963014affb",
+              "leftValue": "={{ $('Extract Contact SDR Owner').first().json.message.content }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        980,
+        -160
+      ],
+      "id": "01f7c8bc-67d6-44d8-93e9-dd87e798af8d",
+      "name": "Contact Has an Owner"
+    },
+    {
+      "parameters": {
+        "resource": "user",
+        "operation": "getAll",
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1340,
+        -300
+      ],
+      "id": "042c7a19-99ae-4e43-8598-d4406a68b2fc",
+      "name": "Slack1",
+      "webhookId": "82c2dd8e-7126-4098-958c-5ce113bb3a04",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7943d391-b704-4d3f-b9b0-1c6d73c87667",
+              "leftValue": "={{ $json.profile.real_name_normalized }}",
+              "rightValue": "={{ $('Extract Contact Owner').first().json.message.content }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "35fbc3e0-12bc-4421-b54c-5c892634f06c",
+              "leftValue": "={{ $json.profile.real_name_normalized }}",
+              "rightValue": "={{ $('Extract Contact SDR Owner').first().json.message.content }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1500,
+        -300
+      ],
+      "id": "ff36087f-10e8-4537-847d-e9989748bac1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Extract and return only the numeric value after \"*Record ID*: \" in the included text snippet.\n\n\nOutput format:\nIf a numeric value after \"*Record ID*: \" exists, output only the numeric value.\nIf no numeric value exists after \"*Record ID*: \" input only the word \"null\".\n\nText snippet:\n{{ $('IF HubSpot Message').first().json['Slack Message'][0].attachments[0].text }} "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        560,
+        -40
+      ],
+      "id": "bebaa847-88b9-4f54-a830-7b388223c394",
+      "name": "Extract Record ID",
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_OPENAIAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Extract and return only the string value after \"*Contact owner*: \" in the included text snippet.\n\nOutput format:\nIf a string value after \"*Contact owner*: \" exists, output only the string value, remove any special characters from the name and replace them with \" \".\nIf no string value exists after \"*Contact owner*: \" input only the word \"null\".\n\nText snippet:\n{{ $('IF HubSpot Message').first().json['Slack Message'][0].attachments[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        560,
+        -200
+      ],
+      "id": "625de03f-8594-4211-b62c-a3841147245b",
+      "name": "Extract Contact Owner",
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_OPENAIAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Extract and return only the string value after \"*SDR Owner*: \" in the included text snippet.\n\nOutput format:\nIf a string value after \"*SDR Owner*: \" exists, output only the numeric value, remove any special characters from the name and replace them with \" \".\nIf no string value exists after \"*SDR Owner*: \" input only the word \"null\".\n\nText snippet:\n{{ $('IF HubSpot Message').first().json['Slack Message'][0].attachments[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        560,
+        -360
+      ],
+      "id": "e7c40d2a-bebd-459e-8353-238f2562fc86",
+      "name": "Extract Contact SDR Owner",
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_OPENAIAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "trigger": [
+          "message"
+        ],
+        "channelId": {
+          "__rl": true,
+          "value": "C076XJXD8JX",
+          "mode": "id"
+        },
+        "options": {
+          "userIds": []
+        }
+      },
+      "type": "n8n-nodes-base.slackTrigger",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        -340
+      ],
+      "id": "43806c7d-7209-470f-bee7-a2dea0fcf521",
+      "name": "New Free Trial Submission",
+      "webhookId": "24215210-a6c9-4275-977c-e3e648f2c964",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cb3d1424-a3d8-43b9-b611-ce7b54c1b595",
+              "leftValue": "={{ $('HubSpot1').first().json.properties.hs_all_owner_ids.versions[0].timestamp.toDateTime('ms').plus(1,'days') }}",
+              "rightValue": "={{ $now }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1960,
+        -320
+      ],
+      "id": "2a2ee8b2-e340-4b02-bddb-f00382df0409",
+      "name": "IF Owner was assigned over an hour ago?",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "get",
+        "contactId": {
+          "__rl": true,
+          "value": "={{$('Extract Record ID').first().json.message.content}}",
+          "mode": "id"
+        },
+        "additionalFields": {
+          "propertiesCollection": {
+            "propertiesValues": {
+              "properties": [
+                "firstname",
+                "lastname",
+                "work_email",
+                "jobtitle",
+                "sdr_owner"
+              ]
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.1,
+      "position": [
+        1720,
+        -320
+      ],
+      "id": "1c0bfdc1-60c2-49ee-8b98-0fac4d54db1c",
+      "name": "HubSpot1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "hubspotOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_HUBSPOTOAUTH2API_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b03f864e-38a5-4105-8531-9047c8d20079",
+              "leftValue": "={{ $('Aggregate').first().json['Slack Message'][0].username }}",
+              "rightValue": "HubSpot",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        200,
+        -160
+      ],
+      "id": "f0c9fc93-c9b1-4124-b6c9-51fc8eeb64cd",
+      "name": "IF HubSpot Message"
+    },
+    {
+      "parameters": {
+        "trigger": [
+          "message"
+        ],
+        "channelId": {
+          "__rl": true,
+          "value": "C08V0NMNWG2",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.slackTrigger",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        0
+      ],
+      "id": "b551a124-aef6-4734-a248-b974d6fa6c67",
+      "name": "New Whitepaper Submission",
+      "webhookId": "3770028d-b2b7-4dad-a5d8-db476ff249bf",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "Slack Message",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -160
+      ],
+      "id": "4cb075f4-267e-4df8-8dd7-113a870edc75",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].channel }}",
+                    "rightValue": "C076XJXD8JX",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a4904bf5-c705-4581-a337-6191a573c092"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Free trial"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "075241f3-4e05-4728-8947-7a45e345b9aa",
+                    "leftValue": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].channel }}",
+                    "rightValue": "C08V0NMNWG2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Whitepaper"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1500,
+        0
+      ],
+      "id": "b8ed53d3-41ad-499b-a3b4-110b1587f109",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-e5367be4-508e-49b8-9b91-37547532a894",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "full_name",
+              "value": "={{ $('HubSpot').first().json.properties.full_name.value }}"
+            },
+            {
+              "name": "work_email",
+              "value": "={{ $('HubSpot').first().json.properties.email.value}}"
+            },
+            {
+              "name": "HubSpot_ID",
+              "value": "={{ $('HubSpot').first().json.properties.hs_object_id.value }}"
+            },
+            {
+              "name": "Channel_ID",
+              "value": "={{ $('New Free Trial Submission').first().json.channel}}"
+            },
+            {
+              "name": "OG_Slack_msg",
+              "value": "={{ $('New Free Trial Submission').first().json.ts }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1740,
+        -100
+      ],
+      "id": "3f307ca0-397b-4919-91e6-6c5fa2ce6de2",
+      "name": "FT Send to Clay for Enrichment"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-025b47bc-4baf-479c-92e3-acc8b022b807",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "work_email",
+              "value": "={{ $('HubSpot').first().json.properties.email.value}}"
+            },
+            {
+              "name": "HubSpot_ID",
+              "value": "={{ $('HubSpot').first().json.properties.hs_object_id.value }}"
+            },
+            {
+              "name": "Channel_ID",
+              "value": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].channel}}"
+            },
+            {
+              "name": "OG_Slack_msg",
+              "value": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].ts }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1740,
+        100
+      ],
+      "id": "ee007b09-3799-41ed-a366-777d3c669750",
+      "name": "WP Send to Clay for Enrichment1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].channel }}",
+                    "rightValue": "C076XJXD8JX",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a4904bf5-c705-4581-a337-6191a573c092"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Free trial"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "075241f3-4e05-4728-8947-7a45e345b9aa",
+                    "leftValue": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].channel }}",
+                    "rightValue": "C08V0NMNWG2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Whitepaper"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2140,
+        -580
+      ],
+      "id": "450f66dc-1b9f-4fe0-b4b6-8357c85eead9",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].channel }}",
+                    "rightValue": "C076XJXD8JX",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a4904bf5-c705-4581-a337-6191a573c092"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Free trial"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "075241f3-4e05-4728-8947-7a45e345b9aa",
+                    "leftValue": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].channel }}",
+                    "rightValue": "C08V0NMNWG2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Whitepaper"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2140,
+        -180
+      ],
+      "id": "3f9e9e57-7290-4e93-8c97-6e43c0a8bde9",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08SNRQ2RRQ",
+          "mode": "id"
+        },
+        "text": "=<@{{ $('If').first().json.id }}> a lead you own have submitted a new Free Trail request:\n- Name: {{$('HubSpot1').first().json.properties.firstname.value}} {{$('HubSpot1').first().json.properties.lastname.value}} \n- Company: {{ $('HubSpot1').first().json.properties.company.value }}\n- Job Title: {{ $('HubSpot1').first().json.properties.jobtitle.value }}\n- HebSpot URL: https://app.hubspot.com/contacts/5945773/record/0-1/{{ $('HubSpot1').first().json.vid }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2880,
+        -1140
+      ],
+      "id": "350ed5e4-2855-45fd-9804-9d2adca66dbe",
+      "name": "FT Notify Contact Owner",
+      "webhookId": "02cfddde-e4b8-49d3-9353-981cdcfce455",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C076XJXD8JX",
+          "mode": "id"
+        },
+        "text": "=Contact Owner ({{ $('Extract Contact SDR Owner').first().json.message['content'] }}) has been notified.",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "thread_ts": {
+            "replyValues": {
+              "thread_ts": "={{ $('New Free Trial Submission').first().json.ts}}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2660,
+        -880
+      ],
+      "id": "e0efcfec-1291-4141-b491-5bd81fd46798",
+      "name": "FT Reply to HubSpot message SDR Owner",
+      "webhookId": "80a6c770-4b5a-4798-8f04-32d990132840",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08SNRQ2RRQ",
+          "mode": "id"
+        },
+        "text": "=<@{{ $('If').first().json.id }}> a lead you own have submitted a new Free Trail request: \n- Name: {{$('HubSpot1').first().json.properties.firstname.value}} {{$('HubSpot1').first().json.properties.lastname.value}}  \n- Company: {{ $('HubSpot1').first().json.properties.company.value }} \n- Job Title: {{ $('HubSpot1').first().json.properties.jobtitle.value }}\n- HebSpot URL: https://app.hubspot.com/contacts/5945773/record/0-1/{{ $('HubSpot1').first().json.vid }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2880,
+        -880
+      ],
+      "id": "f27907c8-ef51-420c-8249-6a26b57e7bc9",
+      "name": "FT Notify Contact SDR Owner",
+      "webhookId": "9ab8b8e6-d256-47cf-af55-40855c9b99d7",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C076XJXD8JX",
+          "mode": "id"
+        },
+        "text": "=Contact Owner ({{ $('Extract Contact Owner').first().json.message['content'] }}) has been notified.",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "thread_ts": {
+            "replyValues": {
+              "thread_ts": "={{$('New Free Trial Submission').first().json.ts}}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2660,
+        -1140
+      ],
+      "id": "94fafb5e-baf4-482f-bb02-34c6d92b0a7a",
+      "name": "FT Reply to HubSpot message Contact Owner",
+      "webhookId": "80a6c770-4b5a-4798-8f04-32d990132840",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08V0NMNWG2",
+          "mode": "id"
+        },
+        "text": "=Contact Owner ({{ $('Extract Contact Owner').first().json.message['content'] }}) has been notified.",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "thread_ts": {
+            "replyValues": {
+              "thread_ts": "={{$('IF HubSpot Message').first().json['Slack Message'][0].ts}}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2660,
+        -660
+      ],
+      "id": "a3ff540a-d91a-4e26-878c-cc789bd6159c",
+      "name": "WP Reply to HubSpot message Contact Owner",
+      "webhookId": "80a6c770-4b5a-4798-8f04-32d990132840",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08SNRQ2RRQ",
+          "mode": "id"
+        },
+        "text": "=<@{{ $('If').first().json.id }}> a lead you own have submitted a new Whitepaper request:\n- Name: {{$('HubSpot1').first().json.properties.firstname.value}} {{$('HubSpot1').first().json.properties.lastname.value}} \n- Company: {{ $('HubSpot1').first().json.properties.company.value }}\n- Job Title: {{ $('HubSpot1').first().json.properties.jobtitle.value }}\n- HebSpot URL: https://app.hubspot.com/contacts/5945773/record/0-1/{{ $('HubSpot1').first().json.vid }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2880,
+        -660
+      ],
+      "id": "279d48af-026d-460e-8ae0-e2f9341d2b25",
+      "name": "WP Notify Contact Owner",
+      "webhookId": "02cfddde-e4b8-49d3-9353-981cdcfce455",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08V0NMNWG2",
+          "mode": "id"
+        },
+        "text": "=Contact Owner ({{ $('Extract Contact SDR Owner').first().json.message['content'] }}) has been notified.",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "thread_ts": {
+            "replyValues": {
+              "thread_ts": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].ts}}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2660,
+        -400
+      ],
+      "id": "e364ffbf-90bb-4ab8-a6aa-098386b36f83",
+      "name": "WP Reply to HubSpot message SDR Owner",
+      "webhookId": "80a6c770-4b5a-4798-8f04-32d990132840",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08SNRQ2RRQ",
+          "mode": "id"
+        },
+        "text": "=<@{{ $('If').first().json.id }}> a lead you own have submitted a new Whitepaper request: \n- Name: {{$('HubSpot1').first().json.properties.firstname.value}} {{$('HubSpot1').first().json.properties.lastname.value}}  \n- Company: {{ $('HubSpot1').first().json.properties.company.value }} \n- Job Title: {{ $('HubSpot1').first().json.properties.jobtitle.value }}\n- HebSpot URL: https://app.hubspot.com/contacts/5945773/record/0-1/{{ $('HubSpot1').first().json.vid }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2880,
+        -400
+      ],
+      "id": "749e681a-1078-4857-a4ba-b7b6bcb6f966",
+      "name": "WP Notify SDR Owner",
+      "webhookId": "9ab8b8e6-d256-47cf-af55-40855c9b99d7",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "be2cd84c-4cec-4ff1-a920-a20263e3a1c6",
+              "leftValue": "={{ $('Extract Contact Owner').first().json.message.content }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2400,
+        -520
+      ],
+      "id": "0a9a2fdb-5c80-4c64-8bd4-4805ca18ce17",
+      "name": "WP Notify Owner or SDR Owner"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "be2cd84c-4cec-4ff1-a920-a20263e3a1c6",
+              "leftValue": "={{ $('Extract Contact Owner').first().json.message.content }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2400,
+        -1000
+      ],
+      "id": "d2cf151f-c4b7-4c16-8bca-be7b72376645",
+      "name": "FT Notify Owner or SDR Owner"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-e5367be4-508e-49b8-9b91-37547532a894",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "full_name",
+              "value": "={{ $('HubSpot1').first().json.properties.full_name.value }}"
+            },
+            {
+              "name": "work_email",
+              "value": "={{ $('HubSpot1').first().json.properties.email.value}}"
+            },
+            {
+              "name": "HubSpot_ID",
+              "value": "={{ $('HubSpot1').first().json.properties.hs_object_id.value }}"
+            },
+            {
+              "name": "Channel_ID",
+              "value": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].channel}}"
+            },
+            {
+              "name": "OG_Slack_msg",
+              "value": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].ts }}"
+            },
+            {
+              "name": "Slack-Owner--ID",
+              "value": "={{ $('If').first().json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2400,
+        -280
+      ],
+      "id": "9b6433b1-a460-4b3a-9963-833a313821d2",
+      "name": "FT Send to Clay for Enrichment W/Owner"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-025b47bc-4baf-479c-92e3-acc8b022b807",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "work_email",
+              "value": "={{ $('HubSpot1').first().json.properties.email.value}}"
+            },
+            {
+              "name": "HubSpot_ID",
+              "value": "={{ $('HubSpot1').first().json.properties.hs_object_id.value }}"
+            },
+            {
+              "name": "Channel_ID",
+              "value": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].channel}}"
+            },
+            {
+              "name": "OG_Slack_msg",
+              "value": "={{ $('IF HubSpot Message').first().json['Slack Message'][0].ts }}"
+            },
+            {
+              "name": "Slack-Owner--ID",
+              "value": "={{ $('If').first().json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2400,
+        -80
+      ],
+      "id": "39a1e78e-5df5-4abe-9636-0c9ff21b90a4",
+      "name": "WP Send to Clay for Enrichment W/Owner"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HubSpot": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contact Has an Owner": {
+      "main": [
+        [
+          {
+            "node": "Slack1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HubSpot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HubSpot1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Record ID": {
+      "main": [
+        [
+          {
+            "node": "Extract Contact Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Contact Owner": {
+      "main": [
+        [
+          {
+            "node": "Extract Contact SDR Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Contact SDR Owner": {
+      "main": [
+        [
+          {
+            "node": "Contact Has an Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Free Trial Submission": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Owner was assigned over an hour ago?": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot1": {
+      "main": [
+        [
+          {
+            "node": "IF Owner was assigned over an hour ago?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF HubSpot Message": {
+      "main": [
+        [
+          {
+            "node": "Extract Record ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Whitepaper Submission": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "IF HubSpot Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "FT Send to Clay for Enrichment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WP Send to Clay for Enrichment1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "FT Notify Owner or SDR Owner",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WP Notify Owner or SDR Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "FT Send to Clay for Enrichment W/Owner",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WP Send to Clay for Enrichment W/Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FT Reply to HubSpot message SDR Owner": {
+      "main": [
+        [
+          {
+            "node": "FT Notify Contact SDR Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FT Reply to HubSpot message Contact Owner": {
+      "main": [
+        [
+          {
+            "node": "FT Notify Contact Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WP Reply to HubSpot message Contact Owner": {
+      "main": [
+        [
+          {
+            "node": "WP Notify Contact Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WP Reply to HubSpot message SDR Owner": {
+      "main": [
+        [
+          {
+            "node": "WP Notify SDR Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WP Notify Owner or SDR Owner": {
+      "main": [
+        [
+          {
+            "node": "WP Reply to HubSpot message Contact Owner",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WP Reply to HubSpot message SDR Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FT Notify Owner or SDR Owner": {
+      "main": [
+        [
+          {
+            "node": "FT Reply to HubSpot message Contact Owner",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FT Reply to HubSpot message SDR Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f56c967a-eef4-462f-8724-49d70e405aaf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ce27a89c8ae68e85f4ab42c91c428ac631b845888de8f3d4542aeae86606a1fc"
+  },
+  "id": "joplXaxuN98mJm2F",
+  "tags": [
+    {
+      "createdAt": "2025-05-18T19:27:49.821Z",
+      "updatedAt": "2025-05-18T19:27:49.821Z",
+      "id": "TUZG2S1DW4VKhqer",
+      "name": "Website-Inbounds"
+    }
+  ]
+}

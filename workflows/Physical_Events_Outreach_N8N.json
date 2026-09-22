@@ -1,0 +1,1382 @@
+{
+  "name": "Steve Physical Events Outreach",
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').first().json.body.tags }}",
+                    "rightValue": "Connection-Request-Accepted",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "1b835d41-a2bc-4404-a3fe-98cf227772ce"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Connection Accepted"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "556a0d16-7c29-413d-9079-3972d89f7ae1",
+                    "leftValue": "={{ $('Webhook').first().json.body.tags }}",
+                    "rightValue": "Message-Sent",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Sent 1st Message"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "dd61e749-af70-4957-be1a-ee9241d77f89",
+                    "leftValue": "={{ $('Webhook').first().json.body.tags }}",
+                    "rightValue": "Connection-Request-Message-Replied",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Connection message reply"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a690df2c-6b17-4e6e-8174-29933f20b2d2",
+                    "leftValue": "={{ $('Webhook').first().json.body.tags }}",
+                    "rightValue": "Message-Replied",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Reply 1st Message"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        380,
+        -100
+      ],
+      "id": "4bf33f1f-e2a5-4fe7-b860-77b6d5d9e107",
+      "name": "Switch",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1mL_hVd7bI7YqDdNjSzMVZi1VzYBeln_iSYudZBzRdqg",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "0",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "={{ $('Webhook').first().json.body.tags }}",
+            "Member ID": "={{ $('Webhook').first().json.body.member_id }}"
+          },
+          "matchingColumns": [
+            "Member ID"
+          ],
+          "schema": [
+            {
+              "id": "SDR NAME",
+              "displayName": "SDR NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SDR HS ID",
+              "displayName": "SDR HS ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SDR Slack ID",
+              "displayName": "SDR Slack ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Speaker Name",
+              "displayName": "Speaker Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn Profile URL Linked In Url",
+              "displayName": "LinkedIn Profile URL Linked In Url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Work Email (Enterprise)",
+              "displayName": "Work Email (Enterprise)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Mobile Phone (EMEA)",
+              "displayName": "Mobile Phone (EMEA)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Custom Connection Request",
+              "displayName": "Custom Connection Request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Conversational Company Name",
+              "displayName": "Conversational Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Profile Owner",
+              "displayName": "Profile Owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Member ID",
+              "displayName": "Member ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ConMsg Reply",
+              "displayName": "ConMsg Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "1stMsg Reply",
+              "displayName": "1stMsg Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "HubSpot URL",
+              "displayName": "HubSpot URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reply",
+              "displayName": "Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Follow up required?",
+              "displayName": "Follow up required?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        940,
+        -160
+      ],
+      "id": "4d6be617-ff9d-4276-83b5-a172c72b93ae",
+      "name": "Update Status (Message sent)",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1mL_hVd7bI7YqDdNjSzMVZi1VzYBeln_iSYudZBzRdqg",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "0",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "={{ $('Webhook').first().json.body.tags }}",
+            "ConMsg Reply": "={{ $('Webhook').first().json.body.last_sent_message_text }}",
+            "Member ID": "={{ $('Webhook').first().json.body.member_id }}"
+          },
+          "matchingColumns": [
+            "Member ID"
+          ],
+          "schema": [
+            {
+              "id": "SDR NAME",
+              "displayName": "SDR NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SDR HS ID",
+              "displayName": "SDR HS ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SDR Slack ID",
+              "displayName": "SDR Slack ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Speaker Name",
+              "displayName": "Speaker Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn Profile URL Linked In Url",
+              "displayName": "LinkedIn Profile URL Linked In Url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Work Email (Enterprise)",
+              "displayName": "Work Email (Enterprise)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Mobile Phone (EMEA)",
+              "displayName": "Mobile Phone (EMEA)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Custom Connection Request",
+              "displayName": "Custom Connection Request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Conversational Company Name",
+              "displayName": "Conversational Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Profile Owner",
+              "displayName": "Profile Owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Member ID",
+              "displayName": "Member ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ConMsg Reply",
+              "displayName": "ConMsg Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "1stMsg Reply",
+              "displayName": "1stMsg Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "HubSpot URL",
+              "displayName": "HubSpot URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reply",
+              "displayName": "Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Follow up required?",
+              "displayName": "Follow up required?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        940,
+        40
+      ],
+      "id": "26b363f9-a11d-40f3-88c3-7ba2d9a928c2",
+      "name": "Update Status (Connection message reply)",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08LSDWJTAP",
+          "mode": "id"
+        },
+        "text": "=🟥 An error has occured in the \"Tags Routing\" step in \"{{ $workflow.name }}\" Workflow:\n- Campaign name:  {{ $('LH Webhook').first().json.body.campaign_name }}\n- Excution ID: {{ $execution.id }}\n- Member ID: {{ $('LH Webhook').first().json.body.member_id }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        200,
+        380
+      ],
+      "id": "940b011f-7479-4480-af18-df774f55ed2f",
+      "name": "Tags Routing Error Notification",
+      "webhookId": "7cea86b8-0f13-47e7-b0ba-1670a169bc16",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08LSDWJTAP",
+          "mode": "id"
+        },
+        "text": "=🟨 A fallback has occured in the \"Tags Routing\" step in \"{{ $workflow.name }}\" Workflow:\n- Campaign name:  {{ $('LH Webhook').first().json.body.campaign_name }}\n- Excution ID: {{ $execution.id }}\n- Member ID: {{ $('LH Webhook').first().json.body.member_id }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        580,
+        300
+      ],
+      "id": "7de55e56-74a2-4a08-9ffa-f64aba482e3d",
+      "name": "Tags Routing Fallback Notification",
+      "webhookId": "28b84314-3b03-499b-bef9-64ec359f8bc8",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08FUMXCGA2",
+          "mode": "list",
+          "cachedResultName": "lh-updates"
+        },
+        "text": "=🤝📤New Connection request accepted:\nName: {{$('Webhook').first().json.body.full_name}}\nCampaign: {{$('Webhook').first().json.body.campaign_name}} \nSource: {{$('Webhook').first().json.body.my_full_name}}\nMember ID: {{$('Webhook').first().json.body.member_id}} ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1160,
+        -340
+      ],
+      "id": "4deb19a3-8000-4125-bb73-93469317a86a",
+      "name": "New Connection Accepted",
+      "webhookId": "de6f374c-2122-48da-9470-b7fd5a0b4775",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08FZLWLQLV",
+          "mode": "id"
+        },
+        "text": "=New reply to a connection request message:\n- Name: {{$('Webhook').first().json.body.full_name}}\n- Company: {{$('Webhook').first().json.body.current_company}}\n- Campaign name:  {{$('Webhook').first().json.body.campaign_name}}\n- Source Profile: {{$('Webhook').first().json.body.my_full_name}}\n- Reply: \"{{$('Webhook').first().json.body.last_sent_message_text}}\"",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1160,
+        40
+      ],
+      "id": "9fa09c1f-1911-4533-afe0-e04da0419106",
+      "name": "Slack",
+      "webhookId": "aaf50e3d-3a9b-4bea-8dc2-4ddce606c55b",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08HN8XD672",
+          "mode": "id"
+        },
+        "text": "=<@{{ $('Webhook').first().json.body.cs_sdr_slack_id }}> Alead you own replied to the outreach LinkedIn account:\n- Campaign name:  {{ $('Webhook').first().json.body.campaign_name }}\n- Name: {{$('Webhook').first().json.body.full_name}}\n- Company: {{ $('Webhook').first().json.body.current_company }}\n- Source Profile: {{ $('Webhook').first().json.body.my_full_name }}\n- Reply message: \"{{ $('Webhook').first().json.body.last_sent_message_text }}\"",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1160,
+        260
+      ],
+      "id": "641c7dd7-35d5-419d-b814-e226dc396ebc",
+      "name": "Reply Received(Needs follow up)",
+      "webhookId": "a66fd6bb-4ee5-479a-a3ac-3b73540e87f9",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1mL_hVd7bI7YqDdNjSzMVZi1VzYBeln_iSYudZBzRdqg",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "0",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "={{ $('Webhook').first().json.body.tags }}",
+            "Member ID": "={{ $('Webhook').first().json.body.member_id }}"
+          },
+          "matchingColumns": [
+            "Member ID"
+          ],
+          "schema": [
+            {
+              "id": "SDR NAME",
+              "displayName": "SDR NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SDR HS ID",
+              "displayName": "SDR HS ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SDR Slack ID",
+              "displayName": "SDR Slack ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Speaker Name",
+              "displayName": "Speaker Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn Profile URL Linked In Url",
+              "displayName": "LinkedIn Profile URL Linked In Url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Work Email (Enterprise)",
+              "displayName": "Work Email (Enterprise)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Mobile Phone (EMEA)",
+              "displayName": "Mobile Phone (EMEA)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Custom Connection Request",
+              "displayName": "Custom Connection Request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Conversational Company Name",
+              "displayName": "Conversational Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Profile Owner",
+              "displayName": "Profile Owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Member ID",
+              "displayName": "Member ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ConMsg Reply",
+              "displayName": "ConMsg Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "1stMsg Reply",
+              "displayName": "1stMsg Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "HubSpot URL",
+              "displayName": "HubSpot URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reply",
+              "displayName": "Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Follow up required?",
+              "displayName": "Follow up required?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        940,
+        -340
+      ],
+      "id": "0f11aa4e-9019-41cc-a4ac-559024b37159",
+      "name": "Google Sheets",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "94eab161-71c5-430c-a438-9adcbea551a4",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4e65edad-5f7f-48e8-9eef-fb3f9047257e",
+      "name": "Webhook",
+      "webhookId": "94eab161-71c5-430c-a438-9adcbea551a4"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://hook.eu2.make.com/wpehq34q54q4jyv6t5af3d2vmkdqjij5",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "LH Webhook",
+              "value": "={{ $('Webhook').first().json.body }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1160,
+        -160
+      ],
+      "id": "cd2397a5-d51d-450d-8f62-994494af5fe6",
+      "name": "Send to SDRs(1st message sent)"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1mL_hVd7bI7YqDdNjSzMVZi1VzYBeln_iSYudZBzRdqg",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "0",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "={{ $('Webhook').first().json.body.tags }}",
+            "1stMsg Reply": "={{ $('Webhook').first().json.body.last_sent_message_text }}",
+            "Member ID": "={{ $('Webhook').first().json.body.member_id }}"
+          },
+          "matchingColumns": [
+            "Member ID"
+          ],
+          "schema": [
+            {
+              "id": "SDR NAME",
+              "displayName": "SDR NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SDR HS ID",
+              "displayName": "SDR HS ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SDR Slack ID",
+              "displayName": "SDR Slack ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Speaker Name",
+              "displayName": "Speaker Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn Profile URL Linked In Url",
+              "displayName": "LinkedIn Profile URL Linked In Url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Work Email (Enterprise)",
+              "displayName": "Work Email (Enterprise)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Mobile Phone (EMEA)",
+              "displayName": "Mobile Phone (EMEA)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Custom Connection Request",
+              "displayName": "Custom Connection Request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Conversational Company Name",
+              "displayName": "Conversational Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Profile Owner",
+              "displayName": "Profile Owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Member ID",
+              "displayName": "Member ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ConMsg Reply",
+              "displayName": "ConMsg Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "1stMsg Reply",
+              "displayName": "1stMsg Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "HubSpot URL",
+              "displayName": "HubSpot URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reply",
+              "displayName": "Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Follow up required?",
+              "displayName": "Follow up required?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        940,
+        260
+      ],
+      "id": "def9ce6c-8e66-4ab3-9709-f81e5ac68356",
+      "name": "Reply Recived (Update Sheet)",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-b99615a2-b815-4fb5-93ae-1a40b74b5d2f",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "LH Webhook",
+              "value": "={{ $('Webhook').first().json.body }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1380,
+        40
+      ],
+      "id": "c4450426-f1cc-4f70-a51e-0c4afe91f8ff",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Status (Message sent)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Status (Connection message reply)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reply Recived (Update Sheet)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Tags Routing Fallback Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Tags Routing Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Status (Message sent)": {
+      "main": [
+        [
+          {
+            "node": "Send to SDRs(1st message sent)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Status (Connection message reply)": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "New Connection Accepted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply Received(Needs follow up)": {
+      "main": [
+        []
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply Recived (Update Sheet)": {
+      "main": [
+        [
+          {
+            "node": "Reply Received(Needs follow up)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to SDRs(1st message sent)": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1f5a21f2-b295-428e-b8e6-7d23a4add2b8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ce27a89c8ae68e85f4ab42c91c428ac631b845888de8f3d4542aeae86606a1fc"
+  },
+  "id": "PNdq7lt3yoESoyhk",
+  "tags": [
+    {
+      "createdAt": "2025-05-19T18:46:43.018Z",
+      "updatedAt": "2025-05-19T18:46:43.018Z",
+      "id": "9M4d3WUtIQoCq6A6",
+      "name": "MJ"
+    }
+  ]
+}

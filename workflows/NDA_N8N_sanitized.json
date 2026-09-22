@@ -1,0 +1,485 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "=NDA with ClientCo",
+        "formDescription": "Plz Fill accurately as this is a legal Document ",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Sender Email",
+              "fieldType": "email",
+              "placeholder": "Please write your email address to get back to you if needed ",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "=Partner",
+              "placeholder": "Deep Opinion ",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Legal Address of the Company",
+              "placeholder": "Office Grabenweg 72, in A-6020 Innsbruck, Austria",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "NDA Type",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Customers"
+                  },
+                  {
+                    "option": "Partners"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Name of the Authprized Person",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Position Of the authorized Person",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Official Email Address ",
+              "fieldType": "email",
+              "placeholder": "write the email where the NDA Agreemnt will be sent",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Submit"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        880
+      ],
+      "id": "f8fc7f30-278b-49b9-93fc-18de2d9437bf",
+      "name": "On form submission",
+      "webhookId": "f7e25db7-7e09-48a4-babc-659cdda31ca0"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1c5f0974-c0ac-4388-928d-1be9ee9897d0",
+              "name": "documentId",
+              "value": "={{$node[\"Create Document\"].json[\"id\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        980
+      ],
+      "id": "98ace11f-6990-41a5-a837-8f364b659f3e",
+      "name": "Extract Document ID"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.pandadoc.com/public/v1/documents",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "API-Key YOUR_PANDADOC_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"name\": \"{{ $json['NDA Type'] }} Non-disclosure agreement\",\n  \"template_uuid\": \"{{ $json['NDA Type'] === 'Customers' ? 'YOUR_CUSTOMER_TEMPLATE_UUID' : 'YOUR_VENDOR_TEMPLATE_UUID' }}\",\n  \"recipients\": [\n    {\n      \"email\": \"{{ $json['Official Email Address '] }}\",\n      \"first_name\": \"{{ $json['Name of the Authprized Person'].split(' ')[0] }}\",\n      \"last_name\": \"{{ $json['Name of the Authprized Person'].split(' ').slice(1).join(' ') }}\",\n      \"role\": \"Client\"\n    }\n  ],\n  \"tokens\": [\n    {\n      \"name\": \"company_name\",\n      \"value\": \"{{ $json.Partner }}\"\n    },\n    {\n      \"name\": \"legal_address\",\n      \"value\": \"{{ $json['Legal Address of the Company'] }}\"\n    },\n    {\n      \"name\": \"authorized_person_name\",\n      \"value\": \"{{ $json['Name of the Authprized Person'] }}\"\n    },\n    {\n      \"name\": \"authorized_person_position\",\n      \"value\": \"{{ $json['Position Of the authorized Person'] }}\"\n    }\n  ],\n  \"metadata\": {\n    \"filled_by\": \"{{ $json['Sender Email'] }}\"\n  }\n}\n",
+        "options": {
+          "lowercaseHeaders": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        60,
+        880
+      ],
+      "id": "43f086b7-24e4-4ae5-b6eb-bb88f110df27",
+      "name": "Create Document"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.pandadoc.com/public/v1/documents/{{ $json.documentId }}/send",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Authorization\": \"API-Key YOUR_PANDADOC_API_KEY\",\n  \"Content-Type\": \"application/json\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        980
+      ],
+      "id": "ea06b844-e51b-40f0-be1a-6f7a9278db96",
+      "name": "Send for Approval"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        980
+      ],
+      "id": "8a7afda0-507e-4ef5-9ec4-02c284e9e71c",
+      "name": "Wait",
+      "webhookId": "65f6e526-762f-4481-8cae-aafb458b57bb"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "nda-approval-resume",
+        "options": {
+          "responseData": "[object Object]"
+        }
+      },
+      "id": "c75ada82-bdf5-4d9e-907b-59b7c3526d54",
+      "name": "Resume via Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        -400,
+        460
+      ],
+      "typeVersion": 2,
+      "webhookId": "22266b19-4842-458e-8e8b-c6f35b27b190"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ff4aa846-b60e-40bf-a3e3-f1f0dc9f0927",
+              "leftValue": "=={{ $json.body[0].data.status }}",
+              "rightValue": "approved",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "id": "b4d8d90c-a79a-4f7a-bf1d-86da8b471893",
+      "name": "Approved",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -200,
+        460
+      ],
+      "typeVersion": 2.2,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "31483231-b178-4414-85d8-ee57c8162668",
+              "leftValue": "={{ $json.body[0].data.status }}",
+              "rightValue": "rejected",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        140,
+        660
+      ],
+      "id": "24143963-6ee6-412a-be3f-b8e20c812b3f",
+      "name": "Rjected"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.pandadoc.com/public/v1/documents/{{ $('Resume via Webhook').item.json.body[0].data.id }}/send",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Authorization\": \"API-Key YOUR_PANDADOC_API_KEY\",\n  \"Content-Type\": \"application/json\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        440
+      ],
+      "id": "f6605e0a-8d08-4ef9-b865-2e12bb7825c3",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -440,
+        100
+      ],
+      "id": "8f021e40-fd38-46e8-aa24-d9ac9bd0d35e",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_IMAP_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "909ae108-2758-4a34-a885-e5c37d8e1e47",
+              "leftValue": "={{ $json.subject }}",
+              "rightValue": "sent you",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "505cc885-e232-4baa-90a0-3cc106b17680",
+              "leftValue": "={{ $json.subject }}",
+              "rightValue": "via PandaDoc",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        100
+      ],
+      "id": "d064e1fb-9aeb-438a-a5e8-c89962908e04",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08KV467RA6",
+          "mode": "list",
+          "cachedResultName": "nda"
+        },
+        "text": "={{ $json.message }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        320,
+        0
+      ],
+      "id": "37192363-cdeb-4e45-b90e-e73a33390bcf",
+      "name": "Slack",
+      "webhookId": "f35e4aaf-ae9e-4fab-a75a-b93154b00059",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKOAUTH2API_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $json[\"textHtml\"] || '';\nif (!html) {\n  return [\n    {\n      json: {\n        message: \"⚠️ Email does not contain HTML content.\"\n      }\n    }\n  ];\n}\n\nconst regex = /<a[^>]*href=\"([^\"]+)\"[^>]*>\\s*OPEN THE DOCUMENT\\s*<\\/a>/i;\nconst match = html.match(regex);\n\nif (match && match[1]) {\n  return [\n    {\n      json: {\n        documentLink: match[1],\n        message: `📄 You’ve received a new document via PandaDoc.\\n\\n👉 <${match[1]}|Open the Document>`\n      }\n    }\n  ];\n} else {\n  return [\n    {\n      json: {\n        message: \"⚠️ PandaDoc email received, but document link not found.\"\n      }\n    }\n  ];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "34fb8a51-0965-4b72-b76e-4b260b455f6b",
+      "name": "Code"
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Create Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Document ID": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Document": {
+      "main": [
+        [
+          {
+            "node": "Extract Document ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Send for Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resume via Webhook": {
+      "main": [
+        [
+          {
+            "node": "Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approved": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Rjected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ce27a89c8ae68e85f4ab42c91c428ac631b845888de8f3d4542aeae86606a1fc"
+  }
+}

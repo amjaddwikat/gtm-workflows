@@ -1,0 +1,2290 @@
+{
+  "name": "East Coast Email Campaign",
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e4dbc267-0d6e-4f65-a754-c638de1f0e12",
+                    "leftValue": "={{$('SL Webhook').first().json.body.event_type}}",
+                    "rightValue": "EMAIL_SENT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Email Sent"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$('SL Webhook').first().json.body.event_type}}",
+                    "rightValue": "EMAIL_OPEN",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "1b835d41-a2bc-4404-a3fe-98cf227772ce"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Email Open"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "556a0d16-7c29-413d-9079-3972d89f7ae1",
+                    "leftValue": "={{$('SL Webhook').first().json.body.event_type}}",
+                    "rightValue": "EMAIL_LINK_CLICK",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Email Link Clicked"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "dd61e749-af70-4957-be1a-ee9241d77f89",
+                    "leftValue": "={{$('SL Webhook').first().json.body.event_type}}",
+                    "rightValue": "EMAIL_REPLY",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Email Replied"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a690df2c-6b17-4e6e-8174-29933f20b2d2",
+                    "leftValue": "={{$('SL Webhook').first().json.body.event_type}}",
+                    "rightValue": "EMAIL_BOUNCE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Email Bounced"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        260,
+        320
+      ],
+      "id": "ccf7262d-670b-47c5-bed8-363aca05837f",
+      "name": "Switch",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08NKMZ6JAG",
+          "mode": "id"
+        },
+        "text": "=🟥 An error has occured in the \"Email Status Routing\" step in \"{{ $workflow.name }}\" Workflow:\n- Campaign name:  {{ $('SL Webhook').first().json.body.campaign_name }}\n- Excution ID: {{ $execution.id }}\n- Email: {{ $('SL Webhook').first().json.body.to_email }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        740,
+        860
+      ],
+      "id": "4a4d3a77-765d-4895-b856-5249a1575436",
+      "name": "Tags Routing Error Notification",
+      "webhookId": "76dcf883-74d8-47d5-9b3f-f6b0c7307cfa",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08NKMZ6JAG",
+          "mode": "id"
+        },
+        "text": "=🟨 A fallback has occured in the \"Email Status Routing\" step in \"{{ $workflow.name }}\" Workflow:\n- Campaign name:  {{ $('SL Webhook').first().json.body.campaign_name }}\n- Excution ID: {{ $execution.id }}\n- Email: {{ $('SL Webhook').first().json.body.to_email }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1040,
+        840
+      ],
+      "id": "b1e69141-495e-4efd-9d75-35d2a0aa6811",
+      "name": "Tags Routing Fallback Notification",
+      "webhookId": "76dcf883-74d8-47d5-9b3f-f6b0c7307cfa",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2a552e55-fcf3-4e82-8453-4b00fb6b2ed6",
+              "leftValue": "={{ $('Get Data(Check Status)').first().json.Status }}",
+              "rightValue": "Email Opened",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "c4e46c14-2835-4749-8024-9544737346e0",
+              "leftValue": "={{ $('Get Data(Check Status)').first().json.Status }}",
+              "rightValue": "Email Sent",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1340,
+        140
+      ],
+      "id": "0a5c9cc0-8240-4e08-91d7-d78c048c9161",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "17vfC1bp1tfiGFdANIV28qCD1mNVjFGc2ZY4iLVgJb0M",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "0",
+          "mode": "id"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Final Email",
+              "lookupValue": "={{ $('SL Webhook').first().json.body.to_email}}"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1420,
+        -340
+      ],
+      "id": "ce0c3c67-dbf3-4871-8e84-4343b789f026",
+      "name": "Get Data",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "17vfC1bp1tfiGFdANIV28qCD1mNVjFGc2ZY4iLVgJb0M",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "934555630",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Job Title": "={{ $('Get Data').first().json['Job Title'] }}",
+            "Full Name": "={{$('Get Data').first().json.cs_full_name}}",
+            "Status": "=Email Sent",
+            "First Name": "={{$('Get Data').first().json.cs_first_name }}",
+            "Last Name": "={{ $('Get Data').first().json['Last Name'] }}",
+            "City (Cs)": "={{ $('Get Data').first().json['City To Use For Messaging'] }}",
+            "Company Domain": "={{ $('Get Data').first().json['Company Domain'] }}",
+            "LinkedIn Profile": "={{ $('Get Data').first().json['LinkedIn Profile'] }}",
+            "Final Email": "={{ $('Get Data').first().json['Final Email'] }}",
+            "Sent Email": "={{ $('SL Webhook').first().json.body.sent_message.text }}",
+            "Campaign Name": "={{ $('SL Webhook').first().json.body.campaign_name }}",
+            "Company Name": "={{ $('Get Data').first().json['Company Name'] }}",
+            "Sent From Email": "={{ $('SL Webhook').first().json.body.from_email }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "First Name",
+              "displayName": "First Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Campaign Name",
+              "displayName": "Campaign Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Final Email",
+              "displayName": "Final Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company Domain",
+              "displayName": "Company Domain",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Job Title",
+              "displayName": "Job Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "City (Cs)",
+              "displayName": "City (Cs)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LinkedIn Profile",
+              "displayName": "LinkedIn Profile",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sent Email",
+              "displayName": "Sent Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Latest Reply",
+              "displayName": "Latest Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Sent to SDRs",
+              "displayName": "Sent to SDRs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Mobile Number",
+              "displayName": "Mobile Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Apollo Company Number",
+              "displayName": "Apollo Company Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Apollo Person Number 1",
+              "displayName": "Apollo Person Number 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Apollo Person Number 2",
+              "displayName": "Apollo Person Number 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "HubSpot Contact URL",
+              "displayName": "HubSpot Contact URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "HubSpot Conact ID",
+              "displayName": "HubSpot Conact ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Sent From Email",
+              "displayName": "Sent From Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2460,
+        -360
+      ],
+      "id": "ca42d552-4513-4747-b617-edd69818c8d6",
+      "name": "Create a row(Email Opened)",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "17vfC1bp1tfiGFdANIV28qCD1mNVjFGc2ZY4iLVgJb0M",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "934555630",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "=Link Clicked",
+            "Final Email": "={{ $('SL Webhook').first().json.body.to_email}}"
+          },
+          "matchingColumns": [
+            "Final Email"
+          ],
+          "schema": [
+            {
+              "id": "First Name",
+              "displayName": "First Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Campaign Name",
+              "displayName": "Campaign Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Final Email",
+              "displayName": "Final Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company Domain",
+              "displayName": "Company Domain",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Job Title",
+              "displayName": "Job Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "City (Cs)",
+              "displayName": "City (Cs)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn Profile",
+              "displayName": "LinkedIn Profile",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Sent Email",
+              "displayName": "Sent Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Latest Reply",
+              "displayName": "Latest Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Sent to SDRs",
+              "displayName": "Sent to SDRs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Mobile Number",
+              "displayName": "Mobile Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Apollo Company Number",
+              "displayName": "Apollo Company Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Apollo Person Number 1",
+              "displayName": "Apollo Person Number 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Apollo Person Number 2",
+              "displayName": "Apollo Person Number 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "HubSpot Contact URL",
+              "displayName": "HubSpot Contact URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "HubSpot Conact ID",
+              "displayName": "HubSpot Conact ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Sent From Email",
+              "displayName": "Sent From Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1800,
+        120
+      ],
+      "id": "cd765b97-eae5-4dc1-9a87-7cfe9d226283",
+      "name": "Update row(Link Clicked)",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "17vfC1bp1tfiGFdANIV28qCD1mNVjFGc2ZY4iLVgJb0M",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "934555630",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "=Reply Received",
+            "Final Email": "={{ $('SL Webhook').first().json.body.to_email}}",
+            "Latest Reply": "={{ $('SL Webhook').first().json.body.reply_message.text }}"
+          },
+          "matchingColumns": [
+            "Final Email"
+          ],
+          "schema": [
+            {
+              "id": "First Name",
+              "displayName": "First Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Campaign Name",
+              "displayName": "Campaign Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Final Email",
+              "displayName": "Final Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company Domain",
+              "displayName": "Company Domain",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Job Title",
+              "displayName": "Job Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "City (Cs)",
+              "displayName": "City (Cs)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn Profile",
+              "displayName": "LinkedIn Profile",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Sent Email",
+              "displayName": "Sent Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Latest Reply",
+              "displayName": "Latest Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sent to SDRs",
+              "displayName": "Sent to SDRs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Mobile Number",
+              "displayName": "Mobile Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Apollo Company Number",
+              "displayName": "Apollo Company Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Apollo Person Number 1",
+              "displayName": "Apollo Person Number 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Apollo Person Number 2",
+              "displayName": "Apollo Person Number 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "HubSpot Contact URL",
+              "displayName": "HubSpot Contact URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "HubSpot Conact ID",
+              "displayName": "HubSpot Conact ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Sent From Email",
+              "displayName": "Sent From Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1600,
+        400
+      ],
+      "id": "0f19e1b4-5850-46a0-9049-95291e5126da",
+      "name": "Update row(Reply Received)",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "17vfC1bp1tfiGFdANIV28qCD1mNVjFGc2ZY4iLVgJb0M",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "934555630",
+          "mode": "id"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Final Email",
+              "lookupValue": "={{ $('SL Webhook').first().json.body.to_email}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1160,
+        160
+      ],
+      "id": "cc3f7592-9a49-427e-ae53-20c55453e02c",
+      "name": "Get Data(Check Status)",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-240aad89-6820-41ea-900a-594011ef433d",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "SL-Webhook",
+              "value": "={{ $('Get Data(Check Status)').first().json }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2060,
+        -100
+      ],
+      "id": "9f6d9caf-d470-4b14-9982-c6cb5615b9f9",
+      "name": "Send to Clay>SDRs(Link Clicked)"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "17vfC1bp1tfiGFdANIV28qCD1mNVjFGc2ZY4iLVgJb0M",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "934555630",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "=Email Opened",
+            "Final Email": "={{ $('SL Webhook').first().json.body.to_email}}"
+          },
+          "matchingColumns": [
+            "Final Email"
+          ],
+          "schema": [
+            {
+              "id": "First Name",
+              "displayName": "First Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Campaign Name",
+              "displayName": "Campaign Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Final Email",
+              "displayName": "Final Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company Domain",
+              "displayName": "Company Domain",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Job Title",
+              "displayName": "Job Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "City (Cs)",
+              "displayName": "City (Cs)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn Profile",
+              "displayName": "LinkedIn Profile",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Sent Email",
+              "displayName": "Sent Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Latest Reply",
+              "displayName": "Latest Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Sent to SDRs",
+              "displayName": "Sent to SDRs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Mobile Number",
+              "displayName": "Mobile Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Apollo Company Number",
+              "displayName": "Apollo Company Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Apollo Person Number 1",
+              "displayName": "Apollo Person Number 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Apollo Person Number 2",
+              "displayName": "Apollo Person Number 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "HubSpot Contact URL",
+              "displayName": "HubSpot Contact URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "HubSpot Conact ID",
+              "displayName": "HubSpot Conact ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Sent From Email",
+              "displayName": "Sent From Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1280,
+        -80
+      ],
+      "id": "455c2eec-54b6-4d72-a2e4-a08a1468e287",
+      "name": "Update row(Email Opened)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8d963788-d850-421b-bdad-93303328434e",
+              "leftValue": "={{ $('Get Data(Check Status)1').first().json.Status }}",
+              "rightValue": "Email Sent",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1060,
+        -60
+      ],
+      "id": "4bb5740b-e00a-428e-a4fe-5d4f14e4d49d",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "17vfC1bp1tfiGFdANIV28qCD1mNVjFGc2ZY4iLVgJb0M",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "934555630",
+          "mode": "id"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Final Email",
+              "lookupValue": "={{ $('SL Webhook').first().json.body.to_email}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        880,
+        -60
+      ],
+      "id": "db1da532-58ec-4890-8aa7-05bf4d7b80d3",
+      "name": "Get Data(Check Status)1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8d963788-d850-421b-bdad-93303328434e",
+              "leftValue": "={{$('Get Data(Check Status)2').first().json}}",
+              "rightValue": "=[{}]",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1980,
+        -340
+      ],
+      "id": "2dbb45de-a968-446a-8de9-233bd52a327f",
+      "name": "If2",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "17vfC1bp1tfiGFdANIV28qCD1mNVjFGc2ZY4iLVgJb0M",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "934555630",
+          "mode": "id"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Final Email",
+              "lookupValue": "={{ $('SL Webhook').first().json.body.to_email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1820,
+        -340
+      ],
+      "id": "3f81fceb-eb84-429c-9df2-6ecba5fa7723",
+      "name": "Get Data(Check Status)2",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2a552e55-fcf3-4e82-8453-4b00fb6b2ed6",
+              "leftValue": "={{ $('Get Data(Check Status)3').first().json['Sent to SDRs'] }}",
+              "rightValue": "Yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2300,
+        360
+      ],
+      "id": "743547ea-ff6b-4080-901a-f6a47149db66",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "17vfC1bp1tfiGFdANIV28qCD1mNVjFGc2ZY4iLVgJb0M",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "934555630",
+          "mode": "id"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Final Email",
+              "lookupValue": "={{ $('SL Webhook').first().json.body.to_email}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2060,
+        380
+      ],
+      "id": "0d85113b-a339-4625-af8c-462f01449cf3",
+      "name": "Get Data(Check Status)3",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLESHEETSOAUTH2API_CREDENTIAL"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-240aad89-6820-41ea-900a-594011ef433d",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "SL-Webhook",
+              "value": "={{ $('Get Data(Check Status)3').first().json }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2620,
+        480
+      ],
+      "id": "804418f3-1e8a-4911-9c26-63484dbe2382",
+      "name": "Send to Clay>SDRs(Reply Received)"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-47bb33e5-5657-4452-9be7-4bc84196c4d0",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "SL-Webhook",
+              "value": "={{ $('Get Data(Check Status)3').first().json }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2620,
+        260
+      ],
+      "id": "3e38e465-d5cd-4500-9f6c-a21280976394",
+      "name": "Send Reply to Make>HubSpot"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08NKMZ6JAG",
+          "mode": "id"
+        },
+        "text": "=🟨 An Email Has Bounced in Campaign:  {{ $('SL Webhook').first().json.body.campaign_name }}\n- Excution ID: {{ $execution.id }}\n- Email: {{ $('SL Webhook').first().json.body.to_email }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1120,
+        700
+      ],
+      "id": "a4aac323-1df7-4f22-812e-59132d5c61df",
+      "name": "Email Bounce",
+      "webhookId": "76dcf883-74d8-47d5-9b3f-f6b0c7307cfa",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "3ff972d3-1409-4193-acf6-d7e2b2099348",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        320
+      ],
+      "id": "6d32326d-68b4-4ae7-af89-57df73f79eae",
+      "name": "SL Webhook",
+      "webhookId": "3ff972d3-1409-4193-acf6-d7e2b2099348"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1640,
+        -340
+      ],
+      "id": "9aea3781-9bf3-4216-9200-263d7a9e735f",
+      "name": "Wait",
+      "webhookId": "2f2119fb-ec28-46b3-9d73-bee845ff89b7"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2200,
+        -360
+      ],
+      "id": "aeb43c4e-0531-4776-8325-145732e04aae",
+      "name": "Wait1",
+      "webhookId": "d7f7ea3c-f114-4e05-a179-de260a01d6cd"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1820,
+        380
+      ],
+      "id": "b763d654-09d9-466e-857f-9690d1956b82",
+      "name": "Wait2",
+      "webhookId": "5c518980-dff1-475f-ac6e-932ffa71b0ab"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1400,
+        400
+      ],
+      "id": "b5520e82-3ebc-4e7c-9935-73167e0aab5a",
+      "name": "Wait3",
+      "webhookId": "6fefb2d9-6431-44ef-a290-0b92c55597fe"
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        -340
+      ],
+      "id": "2a300f13-b4d9-4d7d-9566-294149f799ca",
+      "name": "Wait4",
+      "webhookId": "0cd6e279-6e66-4a61-837f-43ea16eb1b66"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        900,
+        180
+      ],
+      "id": "d55507f9-32e7-4c02-9d6f-27a6a50dc7e0",
+      "name": "Wait5",
+      "webhookId": "faeb2372-2c18-4728-9c6a-74534575796e"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        120
+      ],
+      "id": "2f777816-edfc-4646-ae81-8ef5360da7c0",
+      "name": "Wait6",
+      "webhookId": "bd62adc0-849a-4c74-87cd-0ad391ecb4b6"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-47bb33e5-5657-4452-9be7-4bc84196c4d0",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "SL-Webhook",
+              "value": "={{ $('Get Data(Check Status)').first().json }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2060,
+        80
+      ],
+      "id": "db22189b-f03e-4e97-8396-8c1f7cffbec9",
+      "name": "Send Click to Make>HubSpot"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cdc39711-6ca5-403b-9028-bb859095cee6",
+              "leftValue": "={{ $('SL Webhook').first().json.body.reply_category }}",
+              "rightValue": 6,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        900,
+        420
+      ],
+      "id": "78295bb0-5e63-4c7f-8f74-2319630c9866",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-dd2af698-19e0-40ea-8d5e-f71a81beb55c",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "SL-OOO-Replies",
+              "value": "={{ $('SL Webhook').first().json.body }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        520
+      ],
+      "id": "e3d52708-72af-46c2-beb4-766b41c50906",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08NKMZ6JAG",
+          "mode": "id"
+        },
+        "text": "=✈️ New OOO reply recived:\n- Campaign: {{ $('SL Webhook').first().json.body.campaign_name }}\n- Email: {{ $('SL Webhook').first().json.body.to_email }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1420,
+        640
+      ],
+      "id": "62fcead9-d3b0-4688-82c7-6ed011867973",
+      "name": "OOO reply",
+      "webhookId": "76dcf883-74d8-47d5-9b3f-f6b0c7307cfa",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Email Bounce",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Tags Routing Fallback Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Tags Routing Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Wait6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Get Data": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row(Link Clicked)": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Wait6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Data(Check Status)": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row(Reply Received)": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Update row(Email Opened)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Data(Check Status)1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Data(Check Status)2": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Get Data(Check Status)3": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Send Reply to Make>HubSpot",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send to Clay>SDRs(Reply Received)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to Clay>SDRs(Reply Received)": {
+      "main": [
+        []
+      ]
+    },
+    "SL Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get Data(Check Status)2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Create a row(Email Opened)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a row(Email Opened)": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Get Data(Check Status)3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Update row(Reply Received)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait4": {
+      "main": [
+        [
+          {
+            "node": "Get Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait5": {
+      "main": [
+        [
+          {
+            "node": "Get Data(Check Status)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait6": {
+      "main": [
+        [
+          {
+            "node": "Update row(Link Clicked)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "OOO reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2891857e-c0ae-472b-84ee-ea602ad56107",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ce27a89c8ae68e85f4ab42c91c428ac631b845888de8f3d4542aeae86606a1fc"
+  },
+  "id": "Iraq8y1Kxp8MOUpY",
+  "tags": [
+    {
+      "createdAt": "2025-05-19T18:46:43.018Z",
+      "updatedAt": "2025-05-19T18:46:43.018Z",
+      "id": "9M4d3WUtIQoCq6A6",
+      "name": "MJ"
+    }
+  ]
+}
