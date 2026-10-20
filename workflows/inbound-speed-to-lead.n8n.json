@@ -707,7 +707,7 @@
           "value": "YOUR_SLACK_CHANNEL_11",
           "mode": "id"
         },
-        "text": "=<@{{ $('If').first().json.id }}> a lead you own have submitted a new Free Trail request:\n- Name: {{$('HubSpot1').first().json.properties.firstname.value}} {{$('HubSpot1').first().json.properties.lastname.value}} \n- Company: {{ $('HubSpot1').first().json.properties.company.value }}\n- Job Title: {{ $('HubSpot1').first().json.properties.jobtitle.value }}\n- HebSpot URL: https://app.hubspot.com/contacts/YOUR_HUBSPOT_PORTAL_ID/record/0-1/{{ $('HubSpot1').first().json.vid }}",
+        "text": "=<@{{ $('If').first().json.id }}> a lead you own has submitted a new Free Trial request:\n- Name: {{$('HubSpot1').first().json.properties.firstname.value}} {{$('HubSpot1').first().json.properties.lastname.value}} \n- Company: {{ $('HubSpot1').first().json.properties.company.value }}\n- Job Title: {{ $('HubSpot1').first().json.properties.jobtitle.value }}\n- HubSpot URL: https://app.hubspot.com/contacts/YOUR_HUBSPOT_PORTAL_ID/record/0-1/{{ $('HubSpot1').first().json.vid }}",
         "otherOptions": {
           "includeLinkToWorkflow": false
         }
@@ -768,7 +768,7 @@
           "value": "YOUR_SLACK_CHANNEL_11",
           "mode": "id"
         },
-        "text": "=<@{{ $('If').first().json.id }}> a lead you own have submitted a new Free Trail request: \n- Name: {{$('HubSpot1').first().json.properties.firstname.value}} {{$('HubSpot1').first().json.properties.lastname.value}}  \n- Company: {{ $('HubSpot1').first().json.properties.company.value }} \n- Job Title: {{ $('HubSpot1').first().json.properties.jobtitle.value }}\n- HebSpot URL: https://app.hubspot.com/contacts/YOUR_HUBSPOT_PORTAL_ID/record/0-1/{{ $('HubSpot1').first().json.vid }}",
+        "text": "=<@{{ $('If').first().json.id }}> a lead you own has submitted a new Free Trial request: \n- Name: {{$('HubSpot1').first().json.properties.firstname.value}} {{$('HubSpot1').first().json.properties.lastname.value}}  \n- Company: {{ $('HubSpot1').first().json.properties.company.value }} \n- Job Title: {{ $('HubSpot1').first().json.properties.jobtitle.value }}\n- HubSpot URL: https://app.hubspot.com/contacts/YOUR_HUBSPOT_PORTAL_ID/record/0-1/{{ $('HubSpot1').first().json.vid }}",
         "otherOptions": {
           "includeLinkToWorkflow": false
         }
@@ -862,7 +862,7 @@
           "value": "YOUR_SLACK_CHANNEL_11",
           "mode": "id"
         },
-        "text": "=<@{{ $('If').first().json.id }}> a lead you own have submitted a new Whitepaper request:\n- Name: {{$('HubSpot1').first().json.properties.firstname.value}} {{$('HubSpot1').first().json.properties.lastname.value}} \n- Company: {{ $('HubSpot1').first().json.properties.company.value }}\n- Job Title: {{ $('HubSpot1').first().json.properties.jobtitle.value }}\n- HebSpot URL: https://app.hubspot.com/contacts/YOUR_HUBSPOT_PORTAL_ID/record/0-1/{{ $('HubSpot1').first().json.vid }}",
+        "text": "=<@{{ $('If').first().json.id }}> a lead you own has submitted a new Whitepaper request:\n- Name: {{$('HubSpot1').first().json.properties.firstname.value}} {{$('HubSpot1').first().json.properties.lastname.value}} \n- Company: {{ $('HubSpot1').first().json.properties.company.value }}\n- Job Title: {{ $('HubSpot1').first().json.properties.jobtitle.value }}\n- HubSpot URL: https://app.hubspot.com/contacts/YOUR_HUBSPOT_PORTAL_ID/record/0-1/{{ $('HubSpot1').first().json.vid }}",
         "otherOptions": {
           "includeLinkToWorkflow": false
         }
@@ -923,7 +923,7 @@
           "value": "YOUR_SLACK_CHANNEL_11",
           "mode": "id"
         },
-        "text": "=<@{{ $('If').first().json.id }}> a lead you own have submitted a new Whitepaper request: \n- Name: {{$('HubSpot1').first().json.properties.firstname.value}} {{$('HubSpot1').first().json.properties.lastname.value}}  \n- Company: {{ $('HubSpot1').first().json.properties.company.value }} \n- Job Title: {{ $('HubSpot1').first().json.properties.jobtitle.value }}\n- HebSpot URL: https://app.hubspot.com/contacts/YOUR_HUBSPOT_PORTAL_ID/record/0-1/{{ $('HubSpot1').first().json.vid }}",
+        "text": "=<@{{ $('If').first().json.id }}> a lead you own has submitted a new Whitepaper request: \n- Name: {{$('HubSpot1').first().json.properties.firstname.value}} {{$('HubSpot1').first().json.properties.lastname.value}}  \n- Company: {{ $('HubSpot1').first().json.properties.company.value }} \n- Job Title: {{ $('HubSpot1').first().json.properties.jobtitle.value }}\n- HubSpot URL: https://app.hubspot.com/contacts/YOUR_HUBSPOT_PORTAL_ID/record/0-1/{{ $('HubSpot1').first().json.vid }}",
         "otherOptions": {
           "includeLinkToWorkflow": false
         }

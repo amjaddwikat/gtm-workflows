@@ -262,7 +262,7 @@
         -35
       ],
       "id": "e39e3dd2-b5d3-4c1a-b169-c40435dcc871",
-      "name": "Notify that request is recived",
+      "name": "Notify that request is received",
       "credentials": {
         "slackApi": {
           "id": "YOUR_CREDENTIAL_ID",
@@ -322,7 +322,7 @@
           "includeLinkToWorkflow": false,
           "thread_ts": {
             "replyValues": {
-              "thread_ts": "={{ $('Notify that request is recived').first().json.message_timestamp }}"
+              "thread_ts": "={{ $('Notify that request is received').first().json.message_timestamp }}"
             }
           }
         }
@@ -444,14 +444,14 @@
       "main": [
         [
           {
-            "node": "Notify that request is recived",
+            "node": "Notify that request is received",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Notify that request is recived": {
+    "Notify that request is received": {
       "main": [
         [
           {

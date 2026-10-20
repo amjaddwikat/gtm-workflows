@@ -3,7 +3,7 @@
     {
       "parameters": {
         "formTitle": "=NDA with ClientCo",
-        "formDescription": "Plz Fill accurately as this is a legal Document ",
+        "formDescription": "Please fill this in accurately: it is used to generate a legal document.",
         "formFields": {
           "values": [
             {
@@ -38,7 +38,7 @@
               "requiredField": true
             },
             {
-              "fieldLabel": "Name of the Authprized Person",
+              "fieldLabel": "Name of the Authorized Person",
               "requiredField": true
             },
             {
@@ -109,7 +109,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={\n  \"name\": \"{{ $json['NDA Type'] }} Non-disclosure agreement\",\n  \"template_uuid\": \"{{ $json['NDA Type'] === 'Customers' ? 'YOUR_CUSTOMER_TEMPLATE_UUID' : 'YOUR_VENDOR_TEMPLATE_UUID' }}\",\n  \"recipients\": [\n    {\n      \"email\": \"{{ $json['Official Email Address '] }}\",\n      \"first_name\": \"{{ $json['Name of the Authprized Person'].split(' ')[0] }}\",\n      \"last_name\": \"{{ $json['Name of the Authprized Person'].split(' ').slice(1).join(' ') }}\",\n      \"role\": \"Client\"\n    }\n  ],\n  \"tokens\": [\n    {\n      \"name\": \"company_name\",\n      \"value\": \"{{ $json.Partner }}\"\n    },\n    {\n      \"name\": \"legal_address\",\n      \"value\": \"{{ $json['Legal Address of the Company'] }}\"\n    },\n    {\n      \"name\": \"authorized_person_name\",\n      \"value\": \"{{ $json['Name of the Authprized Person'] }}\"\n    },\n    {\n      \"name\": \"authorized_person_position\",\n      \"value\": \"{{ $json['Position Of the authorized Person'] }}\"\n    }\n  ],\n  \"metadata\": {\n    \"filled_by\": \"{{ $json['Sender Email'] }}\"\n  }\n}\n",
+        "body": "={\n  \"name\": \"{{ $json['NDA Type'] }} Non-disclosure agreement\",\n  \"template_uuid\": \"{{ $json['NDA Type'] === 'Customers' ? 'YOUR_CUSTOMER_TEMPLATE_UUID' : 'YOUR_VENDOR_TEMPLATE_UUID' }}\",\n  \"recipients\": [\n    {\n      \"email\": \"{{ $json['Official Email Address '] }}\",\n      \"first_name\": \"{{ $json['Name of the Authorized Person'].split(' ')[0] }}\",\n      \"last_name\": \"{{ $json['Name of the Authorized Person'].split(' ').slice(1).join(' ') }}\",\n      \"role\": \"Client\"\n    }\n  ],\n  \"tokens\": [\n    {\n      \"name\": \"company_name\",\n      \"value\": \"{{ $json.Partner }}\"\n    },\n    {\n      \"name\": \"legal_address\",\n      \"value\": \"{{ $json['Legal Address of the Company'] }}\"\n    },\n    {\n      \"name\": \"authorized_person_name\",\n      \"value\": \"{{ $json['Name of the Authorized Person'] }}\"\n    },\n    {\n      \"name\": \"authorized_person_position\",\n      \"value\": \"{{ $json['Position Of the authorized Person'] }}\"\n    }\n  ],\n  \"metadata\": {\n    \"filled_by\": \"{{ $json['Sender Email'] }}\"\n  }\n}\n",
         "options": {
           "lowercaseHeaders": false
         }
@@ -240,7 +240,7 @@
         660
       ],
       "id": "24143963-6ee6-412a-be3f-b8e20c812b3f",
-      "name": "Rjected"
+      "name": "Rejected"
     },
     {
       "parameters": {
@@ -431,7 +431,7 @@
         ],
         [
           {
-            "node": "Rjected",
+            "node": "Rejected",
             "type": "main",
             "index": 0
           }
