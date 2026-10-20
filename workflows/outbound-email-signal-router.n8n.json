@@ -1529,7 +1529,7 @@
         -1160
       ],
       "id": "d27c33bb-91a5-4118-82d8-1b8682a647bd",
-      "name": "Create a row (Email sent) *add JobTitle as CS",
+      "name": "Create Tracking Row (First Email)",
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
@@ -3571,7 +3571,7 @@
         ]
       ]
     },
-    "Create a row (Email sent) *add JobTitle as CS": {
+    "Create Tracking Row (First Email)": {
       "main": [
         [],
         [
@@ -3598,7 +3598,7 @@
       "main": [
         [
           {
-            "node": "Create a row (Email sent) *add JobTitle as CS",
+            "node": "Create Tracking Row (First Email)",
             "type": "main",
             "index": 0
           }
