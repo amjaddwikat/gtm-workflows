@@ -278,7 +278,7 @@
       "name": "Get Data",
       "retryOnFail": true,
       "waitBetweenTries": 5000,
-      "maxTries": 5,
+      "maxTries": 3,
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "YOUR_CREDENTIAL_ID",
@@ -541,7 +541,7 @@
       "id": "ca42d552-4513-4747-b617-edd69818c8d6",
       "name": "Create a row(Email Opened)",
       "retryOnFail": true,
-      "maxTries": 5,
+      "maxTries": 3,
       "waitBetweenTries": 5000,
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -798,7 +798,7 @@
       "id": "cd765b97-eae5-4dc1-9a87-7cfe9d226283",
       "name": "Update row(Link Clicked)",
       "retryOnFail": true,
-      "maxTries": 5,
+      "maxTries": 3,
       "waitBetweenTries": 5000,
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -1056,7 +1056,7 @@
       "id": "0f19e1b4-5850-46a0-9049-95291e5126da",
       "name": "Update row(Reply Received)",
       "retryOnFail": true,
-      "maxTries": 5,
+      "maxTries": 3,
       "waitBetweenTries": 5000,
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -1097,7 +1097,7 @@
       "id": "cc3f7592-9a49-427e-ae53-20c55453e02c",
       "name": "Get Data(Check Status)",
       "retryOnFail": true,
-      "maxTries": 5,
+      "maxTries": 3,
       "waitBetweenTries": 5000,
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -1522,7 +1522,7 @@
       "name": "Get Data(Check Status)2",
       "alwaysOutputData": true,
       "retryOnFail": true,
-      "maxTries": 5,
+      "maxTries": 3,
       "waitBetweenTries": 5000,
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -1597,7 +1597,7 @@
       "id": "0d85113b-a339-4625-af8c-462f01449cf3",
       "name": "Get Data(Check Status)3",
       "retryOnFail": true,
-      "maxTries": 5,
+      "maxTries": 3,
       "waitBetweenTries": 5000,
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -1905,6 +1905,34 @@
           "name": "YOUR_SLACKAPI_CREDENTIAL"
         }
       }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "YOUR_SLACK_CHANNEL_2",
+          "mode": "id"
+        },
+        "text": "=🟥 Step \"{{ $prevNode.name }}\" failed after 3 retries in \"{{ $workflow.name }}\".\n- Execution ID: {{ $execution.id }}\n- Lead: {{ $('SL Webhook').first().json.body.to_email }}\n- Campaign: {{ $('SL Webhook').first().json.body.campaign_name }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        740,
+        1080
+      ],
+      "name": "Step Failed Alert",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      },
+      "id": "28ad4a8e-1f3e-4086-a2cb-dc61a05eb950"
     }
   ],
   "pinData": {},
@@ -1918,7 +1946,13 @@
             "index": 0
           }
         ],
-        [],
+        [
+          {
+            "node": "Get Data(Check Status)1",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Wait5",
@@ -1979,7 +2013,7 @@
         ],
         [
           {
-            "node": "Wait4",
+            "node": "Step Failed Alert",
             "type": "main",
             "index": 0
           }
@@ -1991,7 +2025,7 @@
         [],
         [
           {
-            "node": "Wait6",
+            "node": "Step Failed Alert",
             "type": "main",
             "index": 0
           }
@@ -2009,7 +2043,7 @@
         ],
         [
           {
-            "node": "Wait5",
+            "node": "Step Failed Alert",
             "type": "main",
             "index": 0
           }
@@ -2027,7 +2061,7 @@
         ],
         [
           {
-            "node": "Wait3",
+            "node": "Step Failed Alert",
             "type": "main",
             "index": 0
           }
@@ -2067,7 +2101,7 @@
         ],
         [
           {
-            "node": "Wait",
+            "node": "Step Failed Alert",
             "type": "main",
             "index": 0
           }
@@ -2097,7 +2131,7 @@
         ],
         [
           {
-            "node": "Wait2",
+            "node": "Step Failed Alert",
             "type": "main",
             "index": 0
           }
@@ -2165,7 +2199,7 @@
         [],
         [
           {
-            "node": "Wait1",
+            "node": "Step Failed Alert",
             "type": "main",
             "index": 0
           }

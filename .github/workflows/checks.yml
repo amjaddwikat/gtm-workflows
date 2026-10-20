@@ -19,3 +19,8 @@ jobs:
         run: python scripts/check_sanitized.py workflows
       - name: Lint n8n node graphs (broken references, duplicate names)
         run: python scripts/lint_workflows.py workflows
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Behavioural tests (graph invariants, condition logic, Code nodes)
+        run: python -m unittest discover -s tests -v

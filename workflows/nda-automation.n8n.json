@@ -157,9 +157,9 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "nda-approval-resume",
+        "path": "your-webhook-path-4",
         "options": {
-          "responseData": "[object Object]"
+          "rawBody": true
         }
       },
       "id": "c75ada82-bdf5-4d9e-907b-59b7c3526d54",
@@ -183,7 +183,7 @@
           "conditions": [
             {
               "id": "ff4aa846-b60e-40bf-a3e3-f1f0dc9f0927",
-              "leftValue": "=={{ $json.body[0].data.status }}",
+              "leftValue": "={{ $json.body[0].data.status }}",
               "rightValue": "approved",
               "operator": {
                 "type": "string",
@@ -362,6 +362,47 @@
       ],
       "id": "34fb8a51-0965-4b72-b76e-4b260b455f6b",
       "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Reject any approval callback that PandaDoc did not sign.\n// PandaDoc sends ?signature=<hex HMAC-SHA256 of the raw body, keyed with the\n// webhook's shared key>: https://developers.pandadoc.com/docs/webhook-verification\n// Requires: \"Raw Body\" enabled on the webhook node, NODE_FUNCTION_ALLOW_BUILTIN=crypto,\n// and the shared key in the PANDADOC_WEBHOOK_KEY environment variable.\nconst crypto = require('crypto');\n\nconst key = $env.PANDADOC_WEBHOOK_KEY;\nif (!key) throw new Error('PANDADOC_WEBHOOK_KEY is not set');\n\nconst received = String(($input.first().json.query || {}).signature || '');\nconst raw = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst expected = crypto.createHmac('sha256', key).update(raw).digest('hex');\n\nconst valid = received.length === expected.length &&\n  crypto.timingSafeEqual(Buffer.from(received), Buffer.from(expected));\nif (!valid) throw new Error('Invalid PandaDoc webhook signature: request rejected');\n\nreturn $input.all();\n"
+      },
+      "name": "Verify PandaDoc Signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -220,
+        620
+      ],
+      "id": "67b0ba33-1eda-45fd-8310-aece125b70b2"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "YOUR_SLACK_CHANNEL_4",
+          "mode": "list",
+          "cachedResultName": "nda"
+        },
+        "text": "=❌ An NDA was rejected in internal review and was NOT sent to the counterparty.\n- Document: {{ $('Resume via Webhook').item.json.body[0].data.name }}\n- Open it in PandaDoc to see the reviewer's comments: https://app.pandadoc.com/a/#/documents/{{ $('Resume via Webhook').item.json.body[0].data.id }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        360,
+        660
+      ],
+      "name": "Notify NDA Rejected",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKOAUTH2API_CREDENTIAL"
+        }
+      },
+      "id": "db2521ad-2f56-4005-9b64-732904cc534c"
     }
   ],
   "connections": {
@@ -413,7 +454,7 @@
       "main": [
         [
           {
-            "node": "Approved",
+            "node": "Verify PandaDoc Signature",
             "type": "main",
             "index": 0
           }
@@ -466,6 +507,28 @@
         [
           {
             "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify PandaDoc Signature": {
+      "main": [
+        [
+          {
+            "node": "Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rejected": {
+      "main": [
+        [
+          {
+            "node": "Notify NDA Rejected",
             "type": "main",
             "index": 0
           }

@@ -7,7 +7,7 @@
         "operation": "get",
         "contactId": {
           "__rl": true,
-          "value": "={{$('Extract Record ID').first().json.message.content}}",
+          "value": "={{$('Parse HubSpot Notification').first().json.record_id}}",
           "mode": "id"
         },
         "additionalFields": {
@@ -53,20 +53,22 @@
           "conditions": [
             {
               "id": "d6b94b30-acbd-4197-9f88-7e55324be0e4",
-              "leftValue": "={{ $('Extract Contact Owner').first().json.message.content }}",
-              "rightValue": "null",
+              "leftValue": "={{ $('Parse HubSpot Notification').first().json.contact_owner }}",
+              "rightValue": "",
               "operator": {
                 "type": "string",
-                "operation": "notEquals"
+                "operation": "notEmpty",
+                "singleValue": true
               }
             },
             {
               "id": "b2e5beee-7e13-434f-be95-4d963014affb",
-              "leftValue": "={{ $('Extract Contact SDR Owner').first().json.message.content }}",
-              "rightValue": "null",
+              "leftValue": "={{ $('Parse HubSpot Notification').first().json.sdr_owner }}",
+              "rightValue": "",
               "operator": {
                 "type": "string",
-                "operation": "notEquals"
+                "operation": "notEmpty",
+                "singleValue": true
               }
             }
           ],
@@ -117,7 +119,7 @@
             {
               "id": "7943d391-b704-4d3f-b9b0-1c6d73c87667",
               "leftValue": "={{ $json.profile.real_name_normalized }}",
-              "rightValue": "={{ $('Extract Contact Owner').first().json.message.content }}",
+              "rightValue": "={{ $('Parse HubSpot Notification').first().json.contact_owner || '__no_owner__' }}",
               "operator": {
                 "type": "string",
                 "operation": "equals",
@@ -127,7 +129,7 @@
             {
               "id": "35fbc3e0-12bc-4421-b54c-5c892634f06c",
               "leftValue": "={{ $json.profile.real_name_normalized }}",
-              "rightValue": "={{ $('Extract Contact SDR Owner').first().json.message.content }}",
+              "rightValue": "={{ $('Parse HubSpot Notification').first().json.sdr_owner || '__no_owner__' }}",
               "operator": {
                 "type": "string",
                 "operation": "equals",
@@ -149,102 +151,6 @@
       ],
       "id": "ff36087f-10e8-4537-847d-e9989748bac1",
       "name": "If"
-    },
-    {
-      "parameters": {
-        "modelId": {
-          "__rl": true,
-          "value": "gpt-4.1",
-          "mode": "list",
-          "cachedResultName": "GPT-4.1"
-        },
-        "messages": {
-          "values": [
-            {
-              "content": "=Extract and return only the numeric value after \"*Record ID*: \" in the included text snippet.\n\n\nOutput format:\nIf a numeric value after \"*Record ID*: \" exists, output only the numeric value.\nIf no numeric value exists after \"*Record ID*: \" input only the word \"null\".\n\nText snippet:\n{{ $('IF HubSpot Message').first().json['Slack Message'][0].attachments[0].text }} "
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.8,
-      "position": [
-        560,
-        -40
-      ],
-      "id": "bebaa847-88b9-4f54-a830-7b388223c394",
-      "name": "Extract Record ID",
-      "credentials": {
-        "openAiApi": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "YOUR_OPENAIAPI_CREDENTIAL"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "modelId": {
-          "__rl": true,
-          "value": "gpt-4.1",
-          "mode": "list",
-          "cachedResultName": "GPT-4.1"
-        },
-        "messages": {
-          "values": [
-            {
-              "content": "=Extract and return only the string value after \"*Contact owner*: \" in the included text snippet.\n\nOutput format:\nIf a string value after \"*Contact owner*: \" exists, output only the string value, remove any special characters from the name and replace them with \" \".\nIf no string value exists after \"*Contact owner*: \" input only the word \"null\".\n\nText snippet:\n{{ $('IF HubSpot Message').first().json['Slack Message'][0].attachments[0].text }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.8,
-      "position": [
-        560,
-        -200
-      ],
-      "id": "625de03f-8594-4211-b62c-a3841147245b",
-      "name": "Extract Contact Owner",
-      "credentials": {
-        "openAiApi": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "YOUR_OPENAIAPI_CREDENTIAL"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "modelId": {
-          "__rl": true,
-          "value": "gpt-4.1",
-          "mode": "list",
-          "cachedResultName": "GPT-4.1"
-        },
-        "messages": {
-          "values": [
-            {
-              "content": "=Extract and return only the string value after \"*SDR Owner*: \" in the included text snippet.\n\nOutput format:\nIf a string value after \"*SDR Owner*: \" exists, output only the numeric value, remove any special characters from the name and replace them with \" \".\nIf no string value exists after \"*SDR Owner*: \" input only the word \"null\".\n\nText snippet:\n{{ $('IF HubSpot Message').first().json['Slack Message'][0].attachments[0].text }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.8,
-      "position": [
-        560,
-        -360
-      ],
-      "id": "e7c40d2a-bebd-459e-8353-238f2562fc86",
-      "name": "Extract Contact SDR Owner",
-      "credentials": {
-        "openAiApi": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "YOUR_OPENAIAPI_CREDENTIAL"
-        }
-      }
     },
     {
       "parameters": {
@@ -315,7 +221,7 @@
         "operation": "get",
         "contactId": {
           "__rl": true,
-          "value": "={{$('Extract Record ID').first().json.message.content}}",
+          "value": "={{$('Parse HubSpot Notification').first().json.record_id}}",
           "mode": "id"
         },
         "additionalFields": {
@@ -735,7 +641,7 @@
           "value": "YOUR_SLACK_CHANNEL_9",
           "mode": "id"
         },
-        "text": "=Contact Owner ({{ $('Extract Contact SDR Owner').first().json.message['content'] }}) has been notified.",
+        "text": "=Contact Owner ({{ $('Parse HubSpot Notification').first().json.sdr_owner }}) has been notified.",
         "otherOptions": {
           "includeLinkToWorkflow": false,
           "thread_ts": {
@@ -796,7 +702,7 @@
           "value": "YOUR_SLACK_CHANNEL_9",
           "mode": "id"
         },
-        "text": "=Contact Owner ({{ $('Extract Contact Owner').first().json.message['content'] }}) has been notified.",
+        "text": "=Contact Owner ({{ $('Parse HubSpot Notification').first().json.contact_owner }}) has been notified.",
         "otherOptions": {
           "includeLinkToWorkflow": false,
           "thread_ts": {
@@ -829,7 +735,7 @@
           "value": "YOUR_SLACK_CHANNEL_10",
           "mode": "id"
         },
-        "text": "=Contact Owner ({{ $('Extract Contact Owner').first().json.message['content'] }}) has been notified.",
+        "text": "=Contact Owner ({{ $('Parse HubSpot Notification').first().json.contact_owner }}) has been notified.",
         "otherOptions": {
           "includeLinkToWorkflow": false,
           "thread_ts": {
@@ -890,7 +796,7 @@
           "value": "YOUR_SLACK_CHANNEL_10",
           "mode": "id"
         },
-        "text": "=Contact Owner ({{ $('Extract Contact SDR Owner').first().json.message['content'] }}) has been notified.",
+        "text": "=Contact Owner ({{ $('Parse HubSpot Notification').first().json.sdr_owner }}) has been notified.",
         "otherOptions": {
           "includeLinkToWorkflow": false,
           "thread_ts": {
@@ -955,11 +861,12 @@
           "conditions": [
             {
               "id": "be2cd84c-4cec-4ff1-a920-a20263e3a1c6",
-              "leftValue": "={{ $('Extract Contact Owner').first().json.message.content }}",
-              "rightValue": "null",
+              "leftValue": "={{ $('Parse HubSpot Notification').first().json.contact_owner }}",
+              "rightValue": "",
               "operator": {
                 "type": "string",
-                "operation": "notEquals"
+                "operation": "notEmpty",
+                "singleValue": true
               }
             }
           ],
@@ -988,11 +895,12 @@
           "conditions": [
             {
               "id": "be2cd84c-4cec-4ff1-a920-a20263e3a1c6",
-              "leftValue": "={{ $('Extract Contact Owner').first().json.message.content }}",
-              "rightValue": "null",
+              "leftValue": "={{ $('Parse HubSpot Notification').first().json.contact_owner }}",
+              "rightValue": "",
               "operator": {
                 "type": "string",
-                "operation": "notEquals"
+                "operation": "notEmpty",
+                "singleValue": true
               }
             }
           ],
@@ -1092,6 +1000,19 @@
       ],
       "id": "39a1e78e-5df5-4abe-9636-0c9ff21b90a4",
       "name": "WP Send to Clay for Enrichment W/Owner"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the fields HubSpot puts in its Slack form-submission notification.\n// Replaces three LLM calls: the format is fixed, so a regex is instant,\n// free, deterministic and testable.\nconst text = $('IF HubSpot Message').first().json['Slack Message'][0].attachments[0].text || '';\n\nfunction field(label) {\n  const m = text.match(new RegExp('\\\\*' + label + '\\\\*:\\\\s*([^\\\\n]*)', 'i'));\n  return m ? m[1].trim() : '';\n}\n\n// Normalise like Slack's real_name_normalized: no accents, no special characters.\nfunction cleanName(raw) {\n  return raw\n    .normalize('NFD').replace(/[̀-ͯ]/g, '')\n    .replace(/[^A-Za-z0-9 ]+/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\n\nreturn [{\n  json: {\n    record_id: (field('Record ID').match(/\\d+/) || [''])[0],\n    contact_owner: cleanName(field('Contact owner')),\n    sdr_owner: cleanName(field('SDR Owner')),\n  },\n}];\n"
+      },
+      "name": "Parse HubSpot Notification",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        -200
+      ],
+      "id": "afaa77d4-32b3-48ca-a1e7-781e26dd8e8d"
     }
   ],
   "pinData": {},
@@ -1147,39 +1068,6 @@
         ]
       ]
     },
-    "Extract Record ID": {
-      "main": [
-        [
-          {
-            "node": "Extract Contact Owner",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract Contact Owner": {
-      "main": [
-        [
-          {
-            "node": "Extract Contact SDR Owner",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract Contact SDR Owner": {
-      "main": [
-        [
-          {
-            "node": "Contact Has an Owner",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "New Free Trial Submission": {
       "main": [
         [
@@ -1224,7 +1112,7 @@
       "main": [
         [
           {
-            "node": "Extract Record ID",
+            "node": "Parse HubSpot Notification",
             "type": "main",
             "index": 0
           }
@@ -1381,6 +1269,17 @@
         [
           {
             "node": "FT Reply to HubSpot message SDR Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse HubSpot Notification": {
+      "main": [
+        [
+          {
+            "node": "Contact Has an Owner",
             "type": "main",
             "index": 0
           }
