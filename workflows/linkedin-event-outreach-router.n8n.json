@@ -581,7 +581,7 @@
           "value": "YOUR_SLACK_CHANNEL_5",
           "mode": "id"
         },
-        "text": "=🟥 An error has occured in the \"Tags Routing\" step in \"{{ $workflow.name }}\" Workflow:\n- Campaign name:  {{ $('LH Webhook').first().json.body.campaign_name }}\n- Excution ID: {{ $execution.id }}\n- Member ID: {{ $('LH Webhook').first().json.body.member_id }}",
+        "text": "=🟥 An error has occurred in the \"Tags Routing\" step in \"{{ $workflow.name }}\" Workflow:\n- Campaign name:  {{ $('Webhook').first().json.body.campaign_name }}\n- Execution ID: {{ $execution.id }}\n- Member ID: {{ $('Webhook').first().json.body.member_id }}",
         "otherOptions": {
           "includeLinkToWorkflow": false
         }
@@ -609,7 +609,7 @@
           "value": "YOUR_SLACK_CHANNEL_5",
           "mode": "id"
         },
-        "text": "=🟨 A fallback has occured in the \"Tags Routing\" step in \"{{ $workflow.name }}\" Workflow:\n- Campaign name:  {{ $('LH Webhook').first().json.body.campaign_name }}\n- Excution ID: {{ $execution.id }}\n- Member ID: {{ $('LH Webhook').first().json.body.member_id }}",
+        "text": "=🟨 A fallback has occurred in the \"Tags Routing\" step in \"{{ $workflow.name }}\" Workflow:\n- Campaign name:  {{ $('Webhook').first().json.body.campaign_name }}\n- Execution ID: {{ $execution.id }}\n- Member ID: {{ $('Webhook').first().json.body.member_id }}",
         "otherOptions": {
           "includeLinkToWorkflow": false
         }
@@ -694,7 +694,7 @@
           "value": "YOUR_SLACK_CHANNEL_8",
           "mode": "id"
         },
-        "text": "=<@{{ $('Webhook').first().json.body.cs_sdr_slack_id }}> Alead you own replied to the outreach LinkedIn account:\n- Campaign name:  {{ $('Webhook').first().json.body.campaign_name }}\n- Name: {{$('Webhook').first().json.body.full_name}}\n- Company: {{ $('Webhook').first().json.body.current_company }}\n- Source Profile: {{ $('Webhook').first().json.body.my_full_name }}\n- Reply message: \"{{ $('Webhook').first().json.body.last_sent_message_text }}\"",
+        "text": "=<@{{ $('Webhook').first().json.body.cs_sdr_slack_id }}> A lead you own replied to the outreach LinkedIn account:\n- Campaign name:  {{ $('Webhook').first().json.body.campaign_name }}\n- Name: {{$('Webhook').first().json.body.full_name}}\n- Company: {{ $('Webhook').first().json.body.current_company }}\n- Source Profile: {{ $('Webhook').first().json.body.my_full_name }}\n- Reply message: \"{{ $('Webhook').first().json.body.last_sent_message_text }}\"",
         "otherOptions": {
           "includeLinkToWorkflow": false
         }
@@ -1195,7 +1195,7 @@
         260
       ],
       "id": "def9ce6c-8e66-4ab3-9709-f81e5ac68356",
-      "name": "Reply Recived (Update Sheet)",
+      "name": "Reply Received (Update Sheet)",
       "retryOnFail": true,
       "waitBetweenTries": 5000,
       "credentials": {
@@ -1257,7 +1257,7 @@
         ],
         [
           {
-            "node": "Reply Recived (Update Sheet)",
+            "node": "Reply Received (Update Sheet)",
             "type": "main",
             "index": 0
           }
@@ -1327,7 +1327,7 @@
         ]
       ]
     },
-    "Reply Recived (Update Sheet)": {
+    "Reply Received (Update Sheet)": {
       "main": [
         [
           {

@@ -1,4 +1,4 @@
-name: Sanitization check
+name: Workflow checks
 
 on:
   push:
@@ -17,3 +17,5 @@ jobs:
           python-version: "3.12"
       - name: Fail on client / prospect data in workflow exports
         run: python scripts/check_sanitized.py workflows
+      - name: Lint n8n node graphs (broken references, duplicate names)
+        run: python scripts/lint_workflows.py workflows

@@ -153,7 +153,7 @@
           "value": "YOUR_SLACK_CHANNEL_2",
           "mode": "id"
         },
-        "text": "=🟥 An error has occured in the \"Email Status Routing\" step in \"{{ $workflow.name }}\" Workflow:\n- Campaign name:  {{ $('SL Webhook').first().json.body.campaign_name }}\n- Excution ID: {{ $execution.id }}\n- Email: {{ $('SL Webhook').first().json.body.to_email }}",
+        "text": "=🟥 An error has occurred in the \"Email Status Routing\" step in \"{{ $workflow.name }}\" Workflow:\n- Campaign name:  {{ $('SL Webhook').first().json.body.campaign_name }}\n- Execution ID: {{ $execution.id }}\n- Email: {{ $('SL Webhook').first().json.body.to_email }}",
         "otherOptions": {
           "includeLinkToWorkflow": false
         }
@@ -181,7 +181,7 @@
           "value": "YOUR_SLACK_CHANNEL_2",
           "mode": "id"
         },
-        "text": "=🟨 A fallback has occured in the \"Email Status Routing\" step in \"{{ $workflow.name }}\" Workflow:\n- Campaign name:  {{ $('SL Webhook').first().json.body.campaign_name }}\n- Excution ID: {{ $execution.id }}\n- Email: {{ $('SL Webhook').first().json.body.to_email }}",
+        "text": "=🟨 A fallback has occurred in the \"Email Status Routing\" step in \"{{ $workflow.name }}\" Workflow:\n- Campaign name:  {{ $('SL Webhook').first().json.body.campaign_name }}\n- Execution ID: {{ $execution.id }}\n- Email: {{ $('SL Webhook').first().json.body.to_email }}",
         "otherOptions": {
           "includeLinkToWorkflow": false
         }
@@ -1663,7 +1663,7 @@
           "value": "YOUR_SLACK_CHANNEL_2",
           "mode": "id"
         },
-        "text": "=🟨 An Email Has Bounced in Campaign:  {{ $('SL Webhook').first().json.body.campaign_name }}\n- Excution ID: {{ $execution.id }}\n- Email: {{ $('SL Webhook').first().json.body.to_email }}",
+        "text": "=🟨 An Email Has Bounced in Campaign:  {{ $('SL Webhook').first().json.body.campaign_name }}\n- Execution ID: {{ $execution.id }}\n- Email: {{ $('SL Webhook').first().json.body.to_email }}",
         "otherOptions": {
           "includeLinkToWorkflow": false
         }
@@ -1886,7 +1886,7 @@
           "value": "YOUR_SLACK_CHANNEL_2",
           "mode": "id"
         },
-        "text": "=✈️ New OOO reply recived:\n- Campaign: {{ $('SL Webhook').first().json.body.campaign_name }}\n- Email: {{ $('SL Webhook').first().json.body.to_email }}",
+        "text": "=✈️ New OOO reply received:\n- Campaign: {{ $('SL Webhook').first().json.body.campaign_name }}\n- Email: {{ $('SL Webhook').first().json.body.to_email }}",
         "otherOptions": {
           "includeLinkToWorkflow": false
         }
