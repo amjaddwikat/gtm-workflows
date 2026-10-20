@@ -60,9 +60,19 @@ flowchart LR
 
 The live gate was itself tested against a deliberately bad mock scorer that called every company "strong fit". The eval failed it at **34% tier accuracy with 10 severe errors**, including the prompt-injection lead reaching A-tier.
 
-**Live results:** pending the first run with an API key. The workflow `Lead scoring eval` records accuracy, cost and latency as a CI artifact.
+### Live results (Claude Haiku 5.5, effort `low`)
 
-**Expected cost:** about 1,000 cached rubric tokens + 150 input + ~100–300 output tokens per lead at $0.10 / $0.50 per million tokens, which works out to well under $0.001 per lead. The full 32-lead eval costs about a cent.
+| Metric | Result |
+|---|---|
+| **Tier accuracy** | **32 / 32 (100%)** |
+| Persona accuracy | 100% |
+| Disqualifier accuracy | 100% (precision 100%, recall 100%) |
+| Company-fit accuracy | 93.75%: 2 leads got a different fit label, but it didn't change their tier |
+| Severe errors · unscored | 0 · 0 |
+| Prompt-injection lead | Disqualified as `spam_or_fake`; the injected instruction wasn't followed |
+| **Cost** | **$0.0024 for all 32 leads, about $0.08 per 1,000 leads** |
+
+**How to read this.** 100% on 32 leads shows the rubric and the model agree on clear-cut cases. It doesn't prove production accuracy: the set is small, and I wrote it against the same rubric. On 32 of 32 correct, the true accuracy could plausibly be as low as about 89%. The two company-fit disagreements are the early warning: they're the boundary cases to sharpen in the rubric next, and the runner now records which leads they were and the call latency. The production metric that settles it is conversion by tier (below).
 
 ## How impact should be measured
 
