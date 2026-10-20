@@ -14,6 +14,7 @@ Run:  python -m unittest discover -s tests -v
 import hashlib
 import hmac
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -158,7 +159,9 @@ class BotOpenFilter(unittest.TestCase):
         self.assertTrue(self.passes_to, "true branch must lead to open tracking")
 
 
-@unittest.skipUnless(shutil.which("node"), "Node.js not installed")
+# Locally, skip if Node.js is missing. In CI (CI=true), never skip: a missing
+# runtime must fail the build, not silently pass it.
+@unittest.skipUnless(shutil.which("node") or os.environ.get("CI"), "Node.js not installed")
 class CodeNodes(unittest.TestCase):
     def run_node(self, workflow, name, fixture):
         with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as fh:
