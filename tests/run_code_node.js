@@ -4,7 +4,7 @@
 //   node tests/run_code_node.js <workflow.json> "<node name>" <fixture.json>
 //
 // fixture.json: {
-//   "nodes":  { "<node name>": <json of its first item> },   // backs $('Name').first()
+//   "nodes":  { "<node name>": <first item json> | [<item json>, ...] },  // backs $('Name')
 //   "input":  [ <json of each input item> ],                 // backs $input
 //   "query":  { ... },                                       // merged into input[0].query
 //   "env":    { ... },                                       // backs $env
@@ -22,9 +22,11 @@ const fx = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
 const items = (fx.input || [{}]).map((json) => ({ json }));
 if (fx.query) items[0].json.query = fx.query;
 
+// A fixture node value is that node's first item, or an array of all its items.
 const $ = (name) => {
   if (!(name in (fx.nodes || {}))) throw new Error(`fixture has no node ${name}`);
-  return { first: () => ({ json: fx.nodes[name] }), item: { json: fx.nodes[name] } };
+  const all = (Array.isArray(fx.nodes[name]) ? fx.nodes[name] : [fx.nodes[name]]).map((json) => ({ json }));
+  return { first: () => all[0], all: () => all, item: all[0] };
 };
 const $input = { first: () => items[0], all: () => items };
 const ctx = { helpers: { getBinaryDataBuffer: async () => Buffer.from(fx.rawBody || '', 'utf8') } };
