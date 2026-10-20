@@ -114,9 +114,20 @@ def report(rows, results, latencies):
         print("\nMisses:")
         for m in misses:
             print(f"  {m[0]}: expected {m[1]}, got {m[2]} ({m[3]})")
+    # field-level disagreements that did not change the tier: early warning of rubric drift
+    field_misses = [{"id": r["id"], "field": f, "expected": r["expect"][f], "got": s.get(f)}
+                    for r, s in zip(rows, results) for f in FIELDS
+                    if s["tier"] != "unscored" and r["expect"][f] != s.get(f)]
+    if field_misses:
+        print("\nField disagreements:")
+        for m in field_misses:
+            print(f"  {m['id']}: {m['field']} expected {m['expected']}, got {m['got']}")
+    latency = ({"p50_s": round(statistics.median(latencies), 2), "max_s": round(max(latencies), 2)}
+               if latencies else None)
     return {"n": n, "tier_accuracy": tier_ok / n, "field_accuracy": field_acc,
             "dq_precision": precision, "dq_recall": recall, "severe_errors": severe,
-            "unscored": unscored, "cost_usd": cost, "misses": misses}
+            "unscored": unscored, "cost_usd": cost, "latency": latency,
+            "misses": misses, "field_misses": field_misses}
 
 
 def main():
