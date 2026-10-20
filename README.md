@@ -57,7 +57,7 @@ flowchart LR
 
 | # | Workflow | Revenue lever | Platform | Case study | Export |
 |---|---|---|---|---|---|
-| 1 | **Outbound Email Signal Router** | Get positive replies to SDRs fast; keep OOO, alias and bot noise out of their queue | n8n (68 nodes) | [Read](docs/case-studies/01-outbound-email-signal-router.md) | [main](workflows/outbound-email-signal-router.n8n.json) · [regional](workflows/outbound-email-signal-router-regional.n8n.json) |
+| 1 | **Outbound Email Signal Router** | Get positive replies to SDRs fast; keep OOO, alias and bot noise out of their queue | n8n (49 nodes) | [Read](docs/case-studies/01-outbound-email-signal-router.md) | [main](workflows/outbound-email-signal-router.n8n.json) · [regional](workflows/outbound-email-signal-router-regional.n8n.json) |
 | 2 | **Inbound Speed-to-Lead** | Route free-trial and whitepaper leads to their owner in seconds, not days | n8n (30 nodes) | [Read](docs/case-studies/02-inbound-speed-to-lead.md) | [json](workflows/inbound-speed-to-lead.n8n.json) |
 | 3 | **Self-Serve Apollo → Clay Enrichment** | Turn an Apollo search into an enriched list without manual work; used by 14 people | n8n | [Read](docs/case-studies/03-apollo-self-serve-enrichment.md) | [json](workflows/apollo-self-serve-enrichment.n8n.json) |
 | 4 | **LinkedIn Event Outreach Router** | Surface event follow-up replies to the owning SDR | n8n | [Read](docs/case-studies/04-linkedin-event-outreach-router.md) | [json](workflows/linkedin-event-outreach-router.n8n.json) |
@@ -70,31 +70,39 @@ flowchart LR
 - **Configuration in data, not in code.** Rep config, partner registries and routing tables live in sheets and Clay tables, so ops can change behaviour without editing a workflow.
 - **Per-lead state to dedupe.** An SDR is notified on the *first* reply or the first meaningful signal, not on every event.
 - **Context at hand-off.** Alerts carry the campaign, sequence step, reply text and a CRM link, so the rep can act without searching.
+- **Bounded failure handling.** Steps retry a fixed number of times and then alert a human. No infinite loops, no silent drops.
+- **Deterministic where possible.** Structured fields are parsed with code, not an LLM. Inbound webhooks that release documents verify the sender's signature.
 
-## Repo hygiene
+## Quality checks
 
-Workflow exports leak more than API keys: pinned test data holds real lead records, and Clay and Make webhook URLs *are* credentials. Every push and pull request runs two checks ([`.github/workflows/checks.yml`](.github/workflows/checks.yml)):
+Every push and pull request runs three checks ([`.github/workflows/checks.yml`](.github/workflows/checks.yml)):
 
-- [`scripts/check_sanitized.py`](scripts/check_sanitized.py) fails on pinned execution data, email addresses, webhook URLs, Slack, HubSpot and Google Sheet IDs, and API tokens.
-- [`scripts/lint_workflows.py`](scripts/lint_workflows.py) fails on broken node references, unknown connection targets and duplicate node names. It also lists orphan nodes as warnings. Its first run found a real bug: error alerts that referenced a renamed node.
+| Check | What it catches |
+|---|---|
+| [`scripts/check_sanitized.py`](scripts/check_sanitized.py) | Client or prospect data in an export: pinned test data, emails, webhook URLs (Clay and Make URLs *are* credentials), Slack, HubSpot and Sheet IDs, API tokens |
+| [`scripts/lint_workflows.py`](scripts/lint_workflows.py) | Broken node references, unknown connection targets, duplicate node names. Its first run found error alerts pointing at a node that didn't exist. |
+| [`tests/test_workflows.py`](tests/test_workflows.py) | Behaviour: every router output wired, no unreachable nodes, no unbounded loops, bot-open filtering, and the Code nodes (HubSpot parser, PandaDoc signature check) run in Node.js against fixtures |
 
-Run them locally:
+The tests were written to fail first: run against the pre-hardening exports, 13 of 14 fail, each on a real bug (see the [outbound case study](docs/case-studies/01-outbound-email-signal-router.md#hardening-pass)).
+
+Run locally (Python 3 and Node.js):
 
 ```bash
 python scripts/check_sanitized.py workflows
 python scripts/lint_workflows.py workflows
+python -m unittest discover -s tests -v
 ```
 
 ## Using these exports
 
 All client, prospect and employee identifiers have been replaced with `YOUR_…` placeholders. To run a workflow:
 
-1. **n8n:** *Workflows → Import from file*, then attach your own credentials (Slack, HubSpot, Google Sheets, OpenAI, IMAP) and replace the placeholders.
+1. **n8n:** *Workflows → Import from file*, then attach your own credentials (Slack, HubSpot, Google Sheets, IMAP) and replace the placeholders. The NDA flow needs three instance settings for signature verification (see its [case study](docs/case-studies/06-nda-automation.md#security-verifying-the-approval-callback)).
 2. **Make:** *Create scenario → ⋯ → Import blueprint*, then reconnect HubSpot, Notion, Google Sheets and Slack.
 
 ## Stack
 
-n8n · Make · Smartlead · Clay · HubSpot · Apollo / Apify · LinkedIn automation · PandaDoc · Notion · Google Sheets · Slack · OpenAI
+n8n · Make · Smartlead · Clay · HubSpot · Apollo / Apify · LinkedIn automation · PandaDoc · Notion · Google Sheets · Slack
 
 ---
 

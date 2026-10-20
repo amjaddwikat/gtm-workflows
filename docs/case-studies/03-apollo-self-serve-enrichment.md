@@ -15,7 +15,7 @@ A rep submits a form with an **Apollo search URL** and their name. The workflow:
 2. Confirms in Slack that the request is processing.
 3. Runs the Apollo search through an Apify actor and gets the people back.
 4. Sends each person to the requester's Clay table for enrichment.
-5. Polls the results sheet until the **last** person from the batch shows up enriched, then replies in the same Slack thread that the list is ready.
+5. Polls the results sheet every 10 minutes until the **last** person from the batch shows up enriched, then replies in the same Slack thread that the list is ready. After 12 checks (2 hours) it stops and tells the rep in the thread that rows may have failed in Clay.
 
 At the time of export the form served **14 people** across the sales team.
 
@@ -29,7 +29,9 @@ flowchart LR
     AP --> LOOP["Loop over people"] -->|each| CL["POST to requester's Clay table"] --> LOOP
     LOOP -->|done| W["Wait 10 min"] --> CHK["Sheet: find last person"]
     CHK --> OK{"Last person enriched?"}
-    OK -->|no| W
+    OK -->|no| CAP{"Fewer than 12 checks?"}
+    CAP -->|yes| W
+    CAP -->|no| TO["Slack thread: timed out, check Clay"]
     OK -->|yes| N2["Slack thread: list ready"]
 ```
 
@@ -48,7 +50,7 @@ flowchart LR
 
 ## Next iteration
 
-1. **Cap the polling loop** (for example 12 checks) and alert on timeout, so one failed Clay row can't keep an execution alive forever.
+1. **Use a completion webhook from Clay** instead of polling. *(The polling loop is now capped at 2 hours with a timeout message; before, one failed Clay row kept the execution alive forever.)*
 2. **Dedupe against the CRM** before enrichment, so credits aren't spent on contacts the team already owns.
 3. **Batch the Clay posts** instead of one request per person.
 4. **Use a compliant data source.** Swap the Apify scraping step for Apollo's official API or export, in line with the provider's terms of service.

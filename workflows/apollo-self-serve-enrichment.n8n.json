@@ -403,6 +403,72 @@
       ],
       "id": "8982ef57-9ca6-4bf7-b3cd-70ec1e5a506d",
       "name": "Loop in"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "eb7abdc6-6a44-44a4-9876-635bd6bbd7dc",
+              "leftValue": "={{ $runIndex }}",
+              "rightValue": 11,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "IF Polls Remaining (max 12 = 2h)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1820,
+        15
+      ],
+      "id": "8ce40fd9-fc56-4bcd-b641-f7436820513c"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "YOUR_SLACK_CHANNEL_1",
+          "mode": "id"
+        },
+        "text": "=<@{{ $('Get Webhook Address').first().json['Member ID'] }}> Your Apollo enrichment request ({{ $('On form submission').first().json['Request ID'] }}) is still not complete after 2 hours. Some rows may have failed in Clay. Please check your sheet, and ping RevOps if rows are missing.",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "thread_ts": {
+            "replyValues": {
+              "thread_ts": "={{ $('Notify that request is received').first().json.message_timestamp }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2040,
+        15
+      ],
+      "name": "Enrichment timeout notification",
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "YOUR_SLACKAPI_CREDENTIAL"
+        }
+      },
+      "id": "97fd3252-b069-4b6c-a05c-2c608d3197b2"
     }
   ],
   "pinData": {},
@@ -495,7 +561,7 @@
         ],
         [
           {
-            "node": "Wait 10m",
+            "node": "IF Polls Remaining (max 12 = 2h)",
             "type": "main",
             "index": 0
           }
@@ -514,6 +580,24 @@
         [
           {
             "node": "Send to Clay",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Polls Remaining (max 12 = 2h)": {
+      "main": [
+        [
+          {
+            "node": "Wait 10m",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enrichment timeout notification",
             "type": "main",
             "index": 0
           }
