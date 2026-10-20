@@ -1,0 +1,949 @@
+{
+  "name": "Partners Dashboard",
+  "flow": [
+    {
+      "id": 64,
+      "module": "google-sheets:watchRows",
+      "version": 2,
+      "parameters": {
+        "mode": "map",
+        "limit": 100,
+        "sheetId": "Sheet1",
+        "__IMTCONN__": "YOUR_CONNECTION_ID",
+        "spreadsheetId": "YOUR_SHEET_ID",
+        "tableFirstRow": "A1:Z1",
+        "includesHeaders": true,
+        "valueRenderOption": "FORMATTED_VALUE",
+        "dateTimeRenderOption": "FORMATTED_STRING"
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": {
+          "x": 466,
+          "y": 300
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "mode",
+            "type": "select",
+            "label": "Search Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "select",
+                "fromAll",
+                "map"
+              ]
+            }
+          },
+          {
+            "name": "includesHeaders",
+            "type": "select",
+            "label": "Table contains headers",
+            "required": true,
+            "validate": {
+              "enum": [
+                true,
+                false
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit",
+            "required": true
+          },
+          {
+            "name": "valueRenderOption",
+            "type": "select",
+            "label": "Value render option",
+            "validate": {
+              "enum": [
+                "FORMATTED_VALUE",
+                "UNFORMATTED_VALUE",
+                "FORMULA"
+              ]
+            }
+          },
+          {
+            "name": "dateTimeRenderOption",
+            "type": "select",
+            "label": "Date and time render option",
+            "validate": {
+              "enum": [
+                "SERIAL_NUMBER",
+                "FORMATTED_STRING"
+              ]
+            }
+          },
+          {
+            "name": "spreadsheetId",
+            "type": "text",
+            "label": "Spreadsheet ID",
+            "required": true
+          },
+          {
+            "name": "sheetId",
+            "type": "text",
+            "label": "Sheet Name",
+            "required": true
+          },
+          {
+            "name": "tableFirstRow",
+            "type": "text",
+            "label": "Row with headers",
+            "required": true
+          }
+        ]
+      },
+      "onerror": [
+        {
+          "id": 70,
+          "module": "builtin:Ignore",
+          "version": 1,
+          "filter": {
+            "name": "Catch all",
+            "conditions": []
+          },
+          "metadata": {
+            "designer": {
+              "x": 751,
+              "y": 660
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "module": "hubspotcrm:ListCRMObjectAssociation",
+      "version": 2,
+      "parameters": {
+        "__IMTCONN__": "YOUR_CONNECTION_ID"
+      },
+      "mapper": {
+        "limit": "1000",
+        "objectId": "{{64.`0`}}",
+        "objectType": "deals",
+        "toObjectType": [
+          "contacts",
+          "companies",
+          "deals",
+          "notes",
+          "tasks"
+        ]
+      },
+      "metadata": {
+        "designer": {
+          "x": 785,
+          "y": 309
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:hubspotcrm",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": 28,
+      "module": "builtin:BasicFeeder",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "array": "{{23.associations.companies}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1200,
+          "y": 300
+        }
+      }
+    },
+    {
+      "id": 5,
+      "module": "hubspotcrm:getDeal",
+      "version": 2,
+      "parameters": {
+        "__IMTCONN__": "YOUR_CONNECTION_ID"
+      },
+      "filter": {
+        "name": "Deals with Partners",
+        "conditions": [
+          [
+            {
+              "a": "{{28.type}}",
+              "b": "business_partner_business_deal",
+              "o": "text:contain"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "dealId": "{{23.id}}",
+        "parseCustomFields": true
+      },
+      "metadata": {
+        "designer": {
+          "x": 1500,
+          "y": 300,
+          "name": "Get Deal info"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:hubspotcrm",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "module": "hubspotcrm:getCompany",
+      "version": 2,
+      "parameters": {
+        "__IMTCONN__": "YOUR_CONNECTION_ID"
+      },
+      "mapper": {
+        "companyId": "{{28.id}}",
+        "parseCustomFields": true
+      },
+      "metadata": {
+        "designer": {
+          "x": 1800,
+          "y": 300
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:hubspotcrm",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": 52,
+      "module": "hubspotcrm:MakeAPICall",
+      "version": 2,
+      "parameters": {
+        "__IMTCONN__": "YOUR_CONNECTION_ID"
+      },
+      "mapper": {
+        "url": "/crm/v3/pipelines/deals/{{5.properties.pipeline}}/stages",
+        "method": "GET",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      },
+      "metadata": {
+        "designer": {
+          "x": 2100,
+          "y": 300
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:hubspotcrm",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": 53,
+      "module": "builtin:BasicFeeder",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "array": "{{52.body.results}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 2400,
+          "y": 300
+        }
+      }
+    },
+    {
+      "id": 55,
+      "module": "util:SetVariable2",
+      "version": 1,
+      "parameters": {},
+      "filter": {
+        "name": "stage",
+        "conditions": [
+          [
+            {
+              "a": "{{53.id}}",
+              "b": "{{5.properties.dealstage}}",
+              "o": "number:equal"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "name": "deal stage",
+        "scope": "roundtrip",
+        "value": "{{53.label}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 2700,
+          "y": 300
+        }
+      }
+    },
+    {
+      "id": 60,
+      "module": "google-sheets:filterRows",
+      "version": 2,
+      "parameters": {
+        "__IMTCONN__": "YOUR_CONNECTION_ID"
+      },
+      "mapper": {
+        "from": "drive",
+        "filter": [
+          [
+            {
+              "a": "D",
+              "b": "{{24.properties.hs_object_id}}",
+              "o": "text:equal"
+            }
+          ]
+        ],
+        "sheetId": "Sheet1",
+        "sortOrder": "asc",
+        "spreadsheetId": "YOUR_SHEET_ID",
+        "tableFirstRow": "A1:Z1",
+        "includesHeaders": true,
+        "valueRenderOption": "FORMATTED_VALUE",
+        "dateTimeRenderOption": "FORMATTED_STRING"
+      },
+      "metadata": {
+        "designer": {
+          "x": 3000,
+          "y": 300
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "module": "builtin:BasicRouter",
+      "version": 1,
+      "mapper": null,
+      "metadata": {
+        "designer": {
+          "x": 3300,
+          "y": 300
+        }
+      },
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 44,
+              "module": "notion:getADatabase",
+              "version": 1,
+              "parameters": {
+                "__IMTCONN__": "YOUR_CONNECTION_ID"
+              },
+              "filter": {
+                "name": "Partner Dashboard exists",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{60.`2`}}",
+                      "o": "exist"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "database": "{{60.`2`}}"
+              },
+              "metadata": {
+                "designer": {
+                  "x": 3600,
+                  "y": 150
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:notion2,notion3",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              },
+              "onerror": [
+                {
+                  "id": 69,
+                  "module": "builtin:Ignore",
+                  "version": 1,
+                  "filter": {
+                    "name": "Catch all",
+                    "conditions": []
+                  },
+                  "metadata": {
+                    "designer": {
+                      "x": 3874,
+                      "y": 296
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": 45,
+              "module": "notion:searchObjects1",
+              "version": 1,
+              "parameters": {
+                "__IMTCONN__": "YOUR_CONNECTION_ID"
+              },
+              "mapper": {
+                "limit": "1",
+                "filter": [
+                  [
+                    {
+                      "a": "Deal Hubspot ID |&*^%$#@| number",
+                      "b": "{{5.properties.hs_object_id}}",
+                      "o": "number:equals"
+                    }
+                  ]
+                ],
+                "select": "item",
+                "database": "{{44.id}}"
+              },
+              "metadata": {
+                "designer": {
+                  "x": 3902,
+                  "y": 54
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:notion2,notion3",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              }
+            },
+            {
+              "id": 11,
+              "module": "builtin:BasicRouter",
+              "version": 1,
+              "mapper": null,
+              "metadata": {
+                "designer": {
+                  "x": 4200,
+                  "y": 150
+                }
+              },
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 56,
+                      "module": "notion:createAPage",
+                      "version": 1,
+                      "parameters": {
+                        "__IMTCONN__": "YOUR_CONNECTION_ID"
+                      },
+                      "filter": {
+                        "name": "Deal Page does not exists",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{45.id}}",
+                              "o": "notexist"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "fields": [
+                          {
+                            "key": "Deal Name",
+                            "type": "title",
+                            "value": "{{5.properties.dealname}}"
+                          },
+                          {
+                            "key": "Deal Hubspot ID",
+                            "type": "number",
+                            "value": "{{5.properties.hs_object_id}}"
+                          },
+                          {
+                            "key": "Deal Amount",
+                            "type": "number",
+                            "value": "{{5.properties.amount}}"
+                          },
+                          {
+                            "key": "Last updates on deal",
+                            "date": {
+                              "start": "{{5.updatedAt}}"
+                            },
+                            "type": "date"
+                          },
+                          {
+                            "key": "Deal Stage",
+                            "type": "rich_text",
+                            "value": "{{53.label}}"
+                          },
+                          {
+                            "key": "Next Steps",
+                            "type": "rich_text",
+                            "value": "{{64.`1`}}"
+                          }
+                        ],
+                        "select": "map",
+                        "database": "{{44.id}}"
+                      },
+                      "metadata": {
+                        "designer": {
+                          "x": 4500,
+                          "y": 0
+                        },
+                        "parameters": [
+                          {
+                            "name": "__IMTCONN__",
+                            "type": "account:notion2,notion3",
+                            "label": "Connection",
+                            "required": true
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": 40,
+                      "module": "slack:CreateMessage",
+                      "version": 4,
+                      "parameters": {
+                        "__IMTCONN__": "YOUR_CONNECTION_ID"
+                      },
+                      "mapper": {
+                        "text": "created a deal page for {{5.properties.dealname}} for partner{{24.properties.name}}",
+                        "parse": false,
+                        "mrkdwn": true,
+                        "channel": "YOUR_SLACK_DM_1",
+                        "channelType": "im",
+                        "channelWType": "list"
+                      },
+                      "metadata": {
+                        "designer": {
+                          "x": 4800,
+                          "y": 0
+                        },
+                        "parameters": [
+                          {
+                            "name": "__IMTCONN__",
+                            "type": "account:slack2,slack3",
+                            "label": "Connection",
+                            "required": true
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 51,
+                      "module": "notion:updateADatabaseItem",
+                      "version": 1,
+                      "parameters": {
+                        "__IMTCONN__": "YOUR_CONNECTION_ID"
+                      },
+                      "filter": {
+                        "name": "Deal page exists",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{45.id}}",
+                              "o": "exist"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "page": "{{45.id}}",
+                        "fields": [
+                          {
+                            "key": "Deal Name",
+                            "type": "title",
+                            "value": "{{5.properties.dealname}}"
+                          },
+                          {
+                            "key": "Deal Stage",
+                            "type": "rich_text",
+                            "value": "{{53.label}}"
+                          },
+                          {
+                            "key": "Deal Amount",
+                            "type": "number",
+                            "value": "{{5.properties.amount}}"
+                          },
+                          {
+                            "key": "Last updates on deal",
+                            "date": {
+                              "start": "{{5.updatedAt}}"
+                            },
+                            "type": "date"
+                          },
+                          {
+                            "key": "Next Steps",
+                            "type": "rich_text",
+                            "value": "{{64.`1`}}"
+                          }
+                        ],
+                        "select": "map",
+                        "database": "{{44.id}}"
+                      },
+                      "metadata": {
+                        "designer": {
+                          "x": 4500,
+                          "y": 300
+                        },
+                        "parameters": [
+                          {
+                            "name": "__IMTCONN__",
+                            "type": "account:notion2,notion3",
+                            "label": "Connection",
+                            "required": true
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": 38,
+                      "module": "slack:CreateMessage",
+                      "version": 4,
+                      "parameters": {
+                        "__IMTCONN__": "YOUR_CONNECTION_ID"
+                      },
+                      "mapper": {
+                        "text": "deal page is already there {{5.properties.dealname}}",
+                        "parse": false,
+                        "mrkdwn": true,
+                        "channel": "YOUR_SLACK_DM_1",
+                        "channelType": "im",
+                        "channelWType": "list"
+                      },
+                      "metadata": {
+                        "designer": {
+                          "x": 4800,
+                          "y": 300
+                        },
+                        "parameters": [
+                          {
+                            "name": "__IMTCONN__",
+                            "type": "account:slack2,slack3",
+                            "label": "Connection",
+                            "required": true
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 47,
+              "module": "notion:createADatabase",
+              "version": 1,
+              "parameters": {
+                "__IMTCONN__": "YOUR_CONNECTION_ID"
+              },
+              "filter": {
+                "name": "Partner Dashboard does not exist",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{60.`2`}}",
+                      "o": "notexist"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "title": "🔮{{24.properties.name}} Partner Dashboard",
+                "parent": "YOUR_NOTION_PARENT_PAGE_ID",
+                "properties": [
+                  {
+                    "name": "Deal Hubspot ID",
+                    "type": "number",
+                    "format": "number"
+                  },
+                  {
+                    "name": "Deal Name",
+                    "type": "title"
+                  },
+                  {
+                    "name": "Deal Amount",
+                    "type": "number",
+                    "format": "dollar"
+                  },
+                  {
+                    "name": "Last updates on deal",
+                    "type": "date"
+                  },
+                  {
+                    "name": "Deal Stage",
+                    "type": "rich_text"
+                  }
+                ]
+              },
+              "metadata": {
+                "designer": {
+                  "x": 3600,
+                  "y": 600
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:notion2,notion3",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              }
+            },
+            {
+              "id": 49,
+              "module": "notion:createAPage",
+              "version": 1,
+              "parameters": {
+                "__IMTCONN__": "YOUR_CONNECTION_ID"
+              },
+              "mapper": {
+                "fields": [
+                  {
+                    "key": "Deal Name",
+                    "type": "title",
+                    "value": "{{5.properties.dealname}}"
+                  },
+                  {
+                    "key": "Deal Hubspot ID",
+                    "type": "number",
+                    "value": "{{5.properties.hs_object_id}}"
+                  },
+                  {
+                    "key": "Deal Amount",
+                    "type": "number",
+                    "value": "{{5.properties.amount}}"
+                  },
+                  {
+                    "key": "Last updates on deal",
+                    "date": {
+                      "start": "{{5.updatedAt}}"
+                    },
+                    "type": "date"
+                  },
+                  {
+                    "key": "Deal Stage",
+                    "type": "rich_text",
+                    "value": "{{53.label}}"
+                  },
+                  {
+                    "key": "Next Steps",
+                    "type": "rich_text",
+                    "value": "{{64.`1`}}"
+                  }
+                ],
+                "select": "map",
+                "database": "{{47.id}}"
+              },
+              "metadata": {
+                "designer": {
+                  "x": 3900,
+                  "y": 600
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:notion2,notion3",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              }
+            },
+            {
+              "id": 59,
+              "module": "google-sheets:addRow",
+              "version": 2,
+              "parameters": {
+                "__IMTCONN__": "YOUR_CONNECTION_ID"
+              },
+              "mapper": {
+                "from": "drive",
+                "mode": "select",
+                "values": {
+                  "0": "{{47.title[].plain_text}}",
+                  "1": "{{47.url}}",
+                  "2": "{{47.id}}",
+                  "3": "{{24.properties.hs_object_id}}"
+                },
+                "sheetId": "Sheet1",
+                "spreadsheetId": "YOUR_SHEET_ID",
+                "includesHeaders": true,
+                "insertDataOption": "INSERT_ROWS",
+                "valueInputOption": "USER_ENTERED",
+                "insertUnformatted": false
+              },
+              "metadata": {
+                "designer": {
+                  "x": 4200,
+                  "y": 600
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:google",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              }
+            },
+            {
+              "id": 39,
+              "module": "slack:CreateMessage",
+              "version": 4,
+              "parameters": {
+                "__IMTCONN__": "YOUR_CONNECTION_ID"
+              },
+              "mapper": {
+                "text": "partner and deal pages created",
+                "parse": false,
+                "mrkdwn": true,
+                "channel": "YOUR_SLACK_DM_1",
+                "channelType": "im",
+                "channelWType": "list"
+              },
+              "metadata": {
+                "designer": {
+                  "x": 4500,
+                  "y": 600
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:slack2,slack3",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "slots": null,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": [
+        [
+          {
+            "id": 27,
+            "module": "hubspotcrm:searchDeals",
+            "version": 2,
+            "parameters": {
+              "__IMTCONN__": "YOUR_CONNECTION_ID"
+            },
+            "mapper": {
+              "limit": "1000",
+              "query": "{{64.`0`}}",
+              "direction": "DESCENDING",
+              "outputProperties": [
+                "amount",
+                "dealname",
+                "dealstage",
+                "dealtype",
+                "hs_next_step",
+                "next_steps___timeline",
+                "pipeline"
+              ],
+              "parseCustomFields": true
+            },
+            "metadata": {
+              "designer": {
+                "x": -684,
+                "y": 844,
+                "messages": [
+                  {
+                    "category": "link",
+                    "severity": "warning",
+                    "message": "The module is not connected to the data flow."
+                  },
+                  {
+                    "category": "reference",
+                    "severity": "warning",
+                    "message": "Referenced module 'Google Sheets - Watch New Rows' [64] is not accessible."
+                  }
+                ]
+              },
+              "parameters": [
+                {
+                  "name": "__IMTCONN__",
+                  "type": "account:hubspotcrm",
+                  "label": "Connection",
+                  "required": true
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "zone": "eu2.make.com",
+    "notes": []
+  }
+}
