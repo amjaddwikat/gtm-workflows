@@ -24,3 +24,5 @@ jobs:
           node-version: "20"
       - name: Behavioural tests (graph invariants, condition logic, Code nodes)
         run: python -m unittest discover -s tests -v
+      - name: Lead-scoring eval labels agree with the scoring code (no API)
+        run: python evals/run_lead_scoring_eval.py --self-check

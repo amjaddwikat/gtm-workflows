@@ -120,6 +120,9 @@ class GraphInvariants(unittest.TestCase):
                 self.assertTrue(bounded, f"{f.name}: unbounded loop through {cyc}")
 
     def test_failed_steps_alert_instead_of_looping(self):
+        # A failed step goes to a designated handler: a human alert, or (for
+        # lead scoring) a fallback that lets the lead continue unscored.
+        handlers = {"Step Failed Alert", "Unscored Fallback"}
         for f in N8N_FILES:
             wf = load(f.name)
             for n in wf["nodes"]:
@@ -130,7 +133,8 @@ class GraphInvariants(unittest.TestCase):
                     self.assertTrue(n.get("retryOnFail") and n.get("maxTries", 3) <= 5,
                                     f"{f.name}: {n['name']} has no bounded retry")
                     targets = [e["node"] for e in outs[1]]
-                    self.assertEqual(targets, ["Step Failed Alert"], f"{f.name}: {n['name']} error output")
+                    self.assertEqual(len(targets), 1, f"{f.name}: {n['name']} error output")
+                    self.assertIn(targets[0], handlers, f"{f.name}: {n['name']} error output")
 
 
 class BotOpenFilter(unittest.TestCase):

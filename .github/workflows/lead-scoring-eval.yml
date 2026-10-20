@@ -1,0 +1,47 @@
+name: Lead scoring eval
+
+# Live eval of the Claude lead scorer against evals/lead_scoring/leads.jsonl.
+# Costs about $0.01 per run (32 calls to Claude Haiku 5.5), so it runs only
+# when the scorer or the eval changes, or on demand.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - workflows/inbound-lead-scorer.n8n.json
+      - evals/**
+  push:
+    branches: [main]
+    paths:
+      - workflows/inbound-lead-scorer.n8n.json
+      - evals/**
+
+permissions:
+  contents: read
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: pip install anthropic
+      - name: Score the labelled leads with Claude and gate on accuracy
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::warning::ANTHROPIC_API_KEY secret is not set: live eval skipped"
+            exit 0
+          fi
+          python evals/run_lead_scoring_eval.py --min-accuracy 0.80 --out eval-metrics.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lead-scoring-eval
+          path: eval-metrics.json
+          if-no-files-found: ignore
